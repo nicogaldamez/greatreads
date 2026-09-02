@@ -3,6 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!--
+    The Gemini API key lives in localStorage, so any script execution on this
+    origin can exfiltrate it. GitHub Pages can't set response headers, so the
+    policy goes in a meta tag: it pins the exact origins the app talks to, and
+    blocks the exfiltration channel even if an HTML injection ever slips in.
+    Keep connect-src in sync with src/lib/gemini.js and src/lib/catalog.js.
+    No frame-ancestors here: browsers ignore it in a meta tag, and GitHub
+    Pages can't send the header it needs.
+  -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'none';
+    script-src 'self';
+    style-src 'self' https://fonts.googleapis.com;
+    font-src https://fonts.gstatic.com;
+    img-src 'self' data: https://covers.openlibrary.org https://books.google.com https://books.googleusercontent.com;
+    connect-src https://generativelanguage.googleapis.com https://openlibrary.org https://www.googleapis.com;
+    form-action 'none';
+    base-uri 'none'" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
   <title>GreatReads</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

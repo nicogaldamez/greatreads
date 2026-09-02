@@ -74,6 +74,34 @@ test('a Spanish title is not translated by the prompt-building logic', async () 
   assert.equal(recs[0].title, 'Cien años de soledad');
 });
 
+// The key must never reach the query string: URLs land in browser history,
+// extension and proxy logs, and performance.getEntries().
+test('getRecommendations sends the API key as a header, never in the URL', async () => {
+  let seen;
+  globalThis.fetch = async (url, opts) => {
+    seen = { url: String(url), headers: opts.headers };
+    return mockGeminiResponse(JSON.stringify([]));
+  };
+
+  await getRecommendations(profile, [], 'secret-key', 'en');
+  assert.equal(seen.headers['x-goog-api-key'], 'secret-key');
+  assert.doesNotMatch(seen.url, /secret-key/);
+  assert.doesNotMatch(seen.url, /[?&]key=/);
+});
+
+test('validateApiKey sends the API key as a header, never in the URL', async () => {
+  let seen;
+  globalThis.fetch = async (url, opts) => {
+    seen = { url: String(url), headers: opts.headers };
+    return new Response(JSON.stringify({ candidates: [] }), { status: 200 });
+  };
+
+  await validateApiKey('secret-key');
+  assert.equal(seen.headers['x-goog-api-key'], 'secret-key');
+  assert.doesNotMatch(seen.url, /secret-key/);
+  assert.doesNotMatch(seen.url, /[?&]key=/);
+});
+
 test('classifyFailure treats a plain 429 as transient', () => {
   assert.equal(classifyFailure(429, 'Resource has been exhausted, please try again later.'), 'transient');
 });

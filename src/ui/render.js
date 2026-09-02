@@ -9,6 +9,27 @@ import { t, applyTranslations } from '../i18n/index.js';
  */
 
 /**
+ * Cover and catalog URLs are not ours: they come from a Google Books /
+ * Open Library response, or from a `lastBatch` rehydrated out of
+ * localStorage, which anything running on this origin can rewrite. An
+ * attacker-controlled `javascript:` href would run on click, so only
+ * absolute http(s) is ever assigned to an href or src. No base is passed,
+ * so a relative URL fails to parse and is rejected too -- every catalog
+ * URL the app deals with is absolute.
+ * @param {string|undefined} url
+ * @returns {boolean}
+ */
+export function isHttpUrl(url) {
+  if (typeof url !== 'string') return false;
+  try {
+    const { protocol } = new URL(url);
+    return protocol === 'https:' || protocol === 'http:';
+  } catch {
+    return false;
+  }
+}
+
+/**
  * @param {ValidatedRecommendation} item
  * @param {{ staleReason: boolean }} opts
  * @returns {DocumentFragment}
@@ -22,7 +43,7 @@ export function renderCard(item, opts = { staleReason: false }) {
 
   const cover = node.querySelector('.cover');
   const placeholder = node.querySelector('.cover-placeholder');
-  if (coverUrl) {
+  if (isHttpUrl(coverUrl)) {
     cover.src = coverUrl;
     cover.alt = recommendation.title;
     cover.hidden = false;
@@ -42,7 +63,7 @@ export function renderCard(item, opts = { staleReason: false }) {
   staleNote.hidden = !opts.staleReason;
 
   const olLink = node.querySelector('.open-library-link');
-  if (catalogUrl) {
+  if (isHttpUrl(catalogUrl)) {
     olLink.href = catalogUrl;
     olLink.hidden = false;
   }
