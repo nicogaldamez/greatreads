@@ -5,6 +5,11 @@ Goodreads, sin cuenta, sin servidor y sin base de datos. Subís tu
 biblioteca, pegás tu propia API key gratuita de Gemini, y recibís
 recomendaciones validadas contra un catálogo real.
 
+<p align="center">
+  <img width="49%" src="https://github.com/user-attachments/assets/02ba823e-a062-4c34-8ce2-6f6d95356bfe" />
+  <img width="49%" alt="image" src="https://github.com/user-attachments/assets/1c90aba4-001f-4ecb-a512-56846c93ce82" />
+</p>
+   
 ## Por qué
 
 El motor de recomendaciones propio de Goodreads es limitado, y su API está
