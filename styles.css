@@ -68,6 +68,7 @@
 body {
   margin: 0;
   font-family: var(--font-sans);
+  overflow-wrap: break-word;
   background: var(--color-paper);
   color: var(--color-text);
   line-height: 1.5;
@@ -94,7 +95,7 @@ main {
 .site-header h1 {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 2rem;
+  font-size: clamp(1.5rem, 7vw, 2rem);
   letter-spacing: -0.01em;
   text-transform: uppercase;
   text-align: center;
@@ -108,25 +109,17 @@ main {
   text-wrap: balance;
 }
 
-.lang-toggle {
-  position: absolute;
-  top: var(--space-3);
-  right: var(--space-3);
-  padding: var(--space-1) var(--space-3);
-  background: var(--color-accent);
-  border: var(--border-w) solid var(--color-paper);
-  border-radius: 999px;
-  color: var(--color-accent-contrast);
-  cursor: pointer;
-  font-weight: 700;
-  font-family: var(--font-sans);
-}
-
 .setup-screen {
   display: grid;
   gap: var(--space-4);
   max-width: 34rem;
   margin: var(--space-5) auto 0;
+}
+
+/* Un item de grid no baja de su min-content salvo que se lo permita, y ahi
+   un titulo o un boton largo empuja toda la pagina fuera del viewport. */
+.setup-screen > * {
+  min-width: 0;
 }
 
 .step-card {
@@ -220,12 +213,13 @@ main {
 
 .key-row {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--space-2);
   margin-top: var(--space-2);
 }
 
 .key-row input {
-  flex: 1;
+  flex: 1 1 12rem;
   min-width: 0;
   padding: var(--space-2);
   border: var(--border-w) solid var(--color-border);
@@ -272,6 +266,13 @@ button {
   justify-content: center;
   gap: var(--space-3);
   flex-wrap: wrap;
+}
+
+.footer-danger-zone {
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border);
+  text-align: center;
 }
 
 .danger-btn {
@@ -587,4 +588,49 @@ a {
 
 a:hover {
   color: var(--color-accent);
+}
+
+@media (max-width: 40rem) {
+  :root {
+    --shadow-offset: 5px;
+  }
+
+  main {
+    padding: var(--space-3);
+  }
+
+  .site-header {
+    padding: var(--space-3);
+  }
+
+  .step-card {
+    padding: var(--space-3);
+  }
+
+  .setup-screen {
+    margin-top: var(--space-4);
+  }
+
+  .key-row button,
+  .file-picker {
+    width: 100%;
+    text-align: center;
+  }
+
+  .results-screen {
+    margin-top: var(--space-4);
+  }
+
+  .results-header h2 {
+    flex: 1 0 100%;
+  }
+
+  .results-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: var(--space-3);
+  }
+
+  .card-actions {
+    flex-direction: column;
+  }
 }

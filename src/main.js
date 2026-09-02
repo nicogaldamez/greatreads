@@ -3,7 +3,7 @@ import { buildProfile } from './lib/profile.js';
 import { getRecommendations, validateApiKey } from './lib/gemini.js';
 import { validateRecommendations, normalize } from './lib/catalog.js';
 import * as storage from './lib/storage.js';
-import { t, getLocale, setLocale, applyTranslations } from './i18n/index.js';
+import { t, getLocale, applyTranslations } from './i18n/index.js';
 import { renderResults } from './ui/render.js';
 
 const state = {
@@ -21,8 +21,6 @@ const state = {
 };
 
 const el = {
-  langToggle: document.getElementById('lang-toggle'),
-  langToggleLabel: document.getElementById('lang-toggle-label'),
   csvInput: document.getElementById('csv-input'),
   uploadStatus: document.getElementById('upload-status'),
   uploadError: document.getElementById('upload-error'),
@@ -71,10 +69,6 @@ function setGenerating(busy) {
 /** @param {string} key @param {Record<string, string|number>} [vars] */
 function setLoadingPhase(key, vars) {
   el.loadingText.textContent = t(key, vars);
-}
-
-function updateLangToggleLabel() {
-  el.langToggleLabel.textContent = getLocale() === 'es' ? t('app.langToggle.en') : t('app.langToggle.es');
 }
 
 // A cached batch is restored on load, but the CSV behind it is not kept,
@@ -368,18 +362,6 @@ function loadCachedBatch() {
 }
 
 function wireEvents() {
-  el.langToggle.addEventListener('click', () => {
-    const next = getLocale() === 'es' ? 'en' : 'es';
-    setLocale(next);
-    applyTranslations(document);
-    updateLangToggleLabel();
-    renderCurrentResults();
-    updateLibraryNote();
-    // applyTranslations resets every [data-i18n] node to its idle string,
-    // including the regenerate button, so restate the busy labels.
-    if (state.generating) setGenerating(true);
-  });
-
   el.csvInput.addEventListener('change', () => {
     const file = el.csvInput.files?.[0];
     if (file) handleCsvSelected(file);
@@ -401,7 +383,6 @@ function wireEvents() {
 
 function init() {
   applyTranslations(document);
-  updateLangToggleLabel();
   updateKeyUI();
   loadLibrarySnapshot();
   maybeEnableGenerate();

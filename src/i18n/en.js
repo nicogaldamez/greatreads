@@ -1,8 +1,6 @@
 export default {
   'app.title': 'Great Reads',
   'app.tagline': 'Your taste in books, turned into your next recommendation.',
-  'app.langToggle.es': 'ES',
-  'app.langToggle.en': 'EN',
 
   'upload.title': '1. Upload your Goodreads export',
   'upload.instructions': 'Goodreads → My Books → Import/Export → Export Library',
