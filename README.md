@@ -62,11 +62,11 @@ calls Great Reads makes are to Google's Gemini API (your taste profile, not the
 raw file), and to Open Library and Google Books to validate the results.
 
 **What does Great Reads store on my machine?**
-Five `localStorage` entries: your API key (`bookito.apiKey`), your last
-batch of recommendations (`bookito.lastBatch`), a compressed summary of
-your library (`bookito.library`), the books you marked as read or not
-interested (`bookito.exclusions`), and a cache of catalog lookups
-(`bookito.catalogCache`). Nothing else, and nothing on any server.
+Five `localStorage` entries: your API key (`greatreads.apiKey`), your last
+batch of recommendations (`greatreads.lastBatch`), a compressed summary of
+your library (`greatreads.library`), the books you marked as read or not
+interested (`greatreads.exclusions`), and a cache of catalog lookups
+(`greatreads.catalogCache`). Nothing else, and nothing on any server.
 
 The library summary is the smallest slice of the export that regenerating
 needs: the taste profile plus the titles on your read and to-read shelves.

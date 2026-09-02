@@ -65,11 +65,11 @@ perfil de gustos, no el archivo crudo), y a Open Library y Google Books
 para validar los resultados.
 
 **¿Qué guarda Great Reads en mi máquina?**
-Cinco entradas de `localStorage`: tu API key (`bookito.apiKey`), tu última
-tanda de recomendaciones (`bookito.lastBatch`), un resumen comprimido de tu
-biblioteca (`bookito.library`), los libros que marcaste como leídos o sin
-interés (`bookito.exclusions`), y un cache de las búsquedas en catálogos
-(`bookito.catalogCache`). Nada más, y nada en ningún servidor.
+Cinco entradas de `localStorage`: tu API key (`greatreads.apiKey`), tu última
+tanda de recomendaciones (`greatreads.lastBatch`), un resumen comprimido de tu
+biblioteca (`greatreads.library`), los libros que marcaste como leídos o sin
+interés (`greatreads.exclusions`), y un cache de las búsquedas en catálogos
+(`greatreads.catalogCache`). Nada más, y nada en ningún servidor.
 
 El resumen de la biblioteca es la porción mínima de la exportación que hace
 falta para regenerar: el perfil de gustos más los títulos de tus estantes
