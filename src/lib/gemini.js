@@ -32,7 +32,7 @@ function endpointFor(apiKey) {
 /**
  * A 429 from Gemini can mean two very different things: a plain rate
  * limit (retry shortly) or depleted prepay credits/quota (retrying won't
- * help — the user needs to add billing). Google encodes both as HTTP 429
+ * help; the user needs to add billing). Google encodes both as HTTP 429
  * with no distinct status code, so the only signal is the error message
  * text.
  * @param {string} message
@@ -59,7 +59,7 @@ function classifyFailure(status, message) {
  * Sends a minimal request to confirm the API key is valid. Distinguishes
  * an actually-bad key (401/403/400) from a transient failure on Google's
  * end (plain rate limiting, 5xx, or a network error) from depleted
- * billing/quota — each needs a different message, since only the first
+ * billing/quota. Each needs a different message, since only the first
  * one is actually about the key being wrong.
  * @param {string} apiKey
  * @returns {Promise<{ok: true} | {ok: false, reason: 'invalid'|'billing'|'transient'}>}
@@ -80,7 +80,7 @@ export async function validateApiKey(apiKey) {
       const body = await res.json();
       message = body?.error?.message;
     } catch {
-      // No JSON body to read — classify on status alone.
+      // No JSON body to read, so classify on status alone.
     }
 
     return { ok: false, reason: classifyFailure(res.status, message) };
@@ -130,7 +130,7 @@ a vague generality like "because you like science fiction".
 Write the "reason" field in ${langName}. However, "title" and "author" must
 ALWAYS be in their original catalogued form (the form used by library
 catalogs like Open Library, typically the original publication language),
-never translated — this is critical, do not translate titles or author
+never translated. This is critical: do not translate titles or author
 names even though the reason is in ${langName}.
 
 Respond with ONLY a JSON array, no markdown code fences, no preamble, no

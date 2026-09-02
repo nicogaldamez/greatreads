@@ -14,6 +14,10 @@ const state = {
   discardedCount: 0,
   filter: /** @type {'all'|'safe'|'stretch'} */ ('all'),
   resultsLocale: /** @type {'en'|'es'|null} */ (null),
+  editingKey: false,
+  generating: false,
+  shelfTitles: /** @type {{read: string[], toRead: string[]}} */ ({ read: [], toRead: [] }),
+  librarySavedAt: /** @type {string|null} */ (null),
 };
 
 const el = {
@@ -22,35 +26,109 @@ const el = {
   csvInput: document.getElementById('csv-input'),
   uploadStatus: document.getElementById('upload-status'),
   uploadError: document.getElementById('upload-error'),
+  keySetup: document.getElementById('key-setup'),
   apiKeyInput: document.getElementById('api-key-input'),
   saveKeyBtn: document.getElementById('save-key-btn'),
+  changeKeyBtn: document.getElementById('change-key-btn'),
   forgetKeyBtn: document.getElementById('forget-key-btn'),
+  keySavedNote: document.getElementById('key-saved-note'),
+  keySavedActions: document.getElementById('key-saved-actions'),
   keyStatus: document.getElementById('key-status'),
   keyError: document.getElementById('key-error'),
   generateBtn: document.getElementById('generate-btn'),
   generateError: document.getElementById('generate-error'),
-  setupScreen: document.getElementById('setup-screen'),
   loadingScreen: document.getElementById('loading-screen'),
+  loadingText: document.getElementById('loading-text'),
   resultsScreen: document.getElementById('results-screen'),
   resultsGrid: document.getElementById('results-grid'),
   resultsEmpty: document.getElementById('results-empty'),
   discardedNote: document.getElementById('discarded-note'),
   regenerateBtn: document.getElementById('regenerate-btn'),
+  regenerateNote: document.getElementById('regenerate-note'),
+  clearDataBtn: document.getElementById('clear-data-btn'),
   filterBtns: document.querySelectorAll('.filter-btn'),
 };
 
+// The setup form stays on screen at all times. Generating results
+// doesn't replace it, it appends below it. This only toggles the loading
+// indicator and the results grid.
 function showScreen(name) {
-  el.setupScreen.hidden = name !== 'setup';
   el.loadingScreen.hidden = name !== 'loading';
   el.resultsScreen.hidden = name !== 'results';
+}
+
+// While a batch is generating, both entry points are locked so a second
+// click can't fire a concurrent Gemini call, and the previous results (if
+// any) stay on screen, dimmed, so a regenerate doesn't blank the page.
+function setGenerating(busy) {
+  state.generating = busy;
+  el.generateBtn.disabled = busy || !canGenerate();
+  el.regenerateBtn.disabled = busy || !canGenerate();
+  el.regenerateBtn.textContent = busy ? t('generate.regenerating') : t('generate.regenerate');
+  el.loadingScreen.hidden = !busy;
+  el.resultsScreen.classList.toggle('is-busy', busy);
+  el.resultsScreen.setAttribute('aria-busy', String(busy));
+}
+
+/** @param {string} key @param {Record<string, string|number>} [vars] */
+function setLoadingPhase(key, vars) {
+  el.loadingText.textContent = t(key, vars);
 }
 
 function updateLangToggleLabel() {
   el.langToggleLabel.textContent = getLocale() === 'es' ? t('app.langToggle.en') : t('app.langToggle.es');
 }
 
+// A cached batch is restored on load, but the CSV behind it is not kept,
+// so after a reload there is a results grid with no profile to regenerate
+// from. Rather than let the button no-op, it goes inert and says why.
+function canGenerate() {
+  return !!(state.profile && state.apiKey);
+}
+
 function maybeEnableGenerate() {
-  el.generateBtn.disabled = !(state.profile && state.apiKey);
+  el.generateBtn.disabled = state.generating || !canGenerate();
+  el.regenerateBtn.disabled = state.generating || !canGenerate();
+  updateLibraryNote();
+}
+
+// Two different notes share one slot: if there is no profile at all the
+// user must upload a CSV, and if the profile came from a stored snapshot
+// we say how old it is, since a regenerate will run against that.
+function updateLibraryNote() {
+  if (!state.profile) {
+    el.regenerateNote.textContent = t('generate.needsCsv');
+    el.regenerateNote.hidden = state.results.length === 0;
+    return;
+  }
+  const usingSnapshot = state.books.length === 0 && state.librarySavedAt;
+  if (usingSnapshot) {
+    el.regenerateNote.textContent = t('generate.usingSavedLibrary', {
+      date: formatSavedAt(state.librarySavedAt),
+    });
+    el.regenerateNote.hidden = false;
+    return;
+  }
+  el.regenerateNote.hidden = true;
+}
+
+/** @param {string} iso @returns {string} */
+function formatSavedAt(iso) {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return '';
+  return new Intl.DateTimeFormat(getLocale(), { dateStyle: 'long' }).format(date);
+}
+
+// Once a key is saved, the "paste a key" form gives way to a plain
+// confirmation with "change" (reopen the form, old key still valid until
+// a new one is saved) and "forget" (clear it outright). The form is shown
+// whenever there's no key yet, or the user asked to change it.
+function updateKeyUI() {
+  const hasKey = !!state.apiKey;
+  const showForm = !hasKey || state.editingKey;
+  el.keySetup.hidden = !showForm;
+  el.keySavedNote.hidden = !hasKey || showForm;
+  el.keySavedActions.hidden = !hasKey || showForm;
 }
 
 function readCsvFile(file) {
@@ -71,6 +149,13 @@ async function handleCsvSelected(file) {
 
     state.books = books;
     state.profile = buildProfile(books);
+    state.shelfTitles = shelfTitlesFrom(books);
+    state.librarySavedAt = new Date().toISOString();
+    storage.setLibrary({
+      profile: state.profile,
+      shelfTitles: state.shelfTitles,
+      savedAt: state.librarySavedAt,
+    });
 
     el.uploadStatus.textContent = t('upload.fileSelected', { filename: file.name });
     el.uploadStatus.hidden = false;
@@ -108,26 +193,60 @@ async function handleSaveKey() {
   state.apiKey = key;
   storage.setApiKey(key);
   el.apiKeyInput.value = '';
-  el.forgetKeyBtn.hidden = false;
+  state.editingKey = false;
+  updateKeyUI();
   maybeEnableGenerate();
+}
+
+function handleChangeKey() {
+  state.editingKey = true;
+  updateKeyUI();
+  el.apiKeyInput.focus();
 }
 
 function handleForgetKey() {
   state.apiKey = null;
+  state.editingKey = false;
   storage.forgetApiKey();
-  el.forgetKeyBtn.hidden = true;
+  updateKeyUI();
   maybeEnableGenerate();
 }
 
+/**
+ * @param {import('./lib/goodreads.js').Book[]} books
+ * @returns {{read: string[], toRead: string[]}}
+ */
+function shelfTitlesFrom(books) {
+  const onShelf = (shelf) =>
+    books.filter((b) => b.exclusiveShelf === shelf).map((b) => `${b.title} — ${b.author}`);
+  return { read: onShelf('read'), toRead: onShelf('to-read') };
+}
+
+// Reads from state.shelfTitles rather than state.books, so this works
+// identically whether the CSV was just uploaded or the snapshot was
+// restored from a previous session.
+function handleClearData() {
+  if (!window.confirm(t('privacy.clearConfirm'))) return;
+  storage.clearAll();
+  state.apiKey = null;
+  state.editingKey = false;
+  state.books = [];
+  state.profile = null;
+  state.shelfTitles = { read: [], toRead: [] };
+  state.librarySavedAt = null;
+  state.results = [];
+  state.discardedCount = 0;
+  state.resultsLocale = null;
+  el.uploadStatus.hidden = true;
+  el.csvInput.value = '';
+  updateKeyUI();
+  maybeEnableGenerate();
+  showScreen('idle');
+}
+
 function buildExclusionTitles() {
-  const toReadTitles = state.books
-    .filter((b) => b.exclusiveShelf === 'to-read')
-    .map((b) => `${b.title} — ${b.author}`);
-  const readTitles = state.books
-    .filter((b) => b.exclusiveShelf === 'read')
-    .map((b) => `${b.title} — ${b.author}`);
   const { notInterested } = storage.getExclusions();
-  return [...readTitles, ...toReadTitles, ...notInterested];
+  return [...state.shelfTitles.read, ...state.shelfTitles.toRead, ...notInterested];
 }
 
 function parseTitleAuthor(entry) {
@@ -136,24 +255,29 @@ function parseTitleAuthor(entry) {
 }
 
 function readBooksForDedupe() {
-  const fromCsv = state.books
-    .filter((b) => b.exclusiveShelf === 'read')
-    .map((b) => ({ title: b.title, author: b.author }));
+  const fromLibrary = state.shelfTitles.read.map(parseTitleAuthor);
   const { read, notInterested } = storage.getExclusions();
-  return [...fromCsv, ...read.map(parseTitleAuthor), ...notInterested.map(parseTitleAuthor)];
+  return [...fromLibrary, ...read.map(parseTitleAuthor), ...notInterested.map(parseTitleAuthor)];
 }
 
 async function handleGenerate() {
-  if (!state.profile || !state.apiKey) return;
+  if (!state.profile || !state.apiKey || state.generating) return;
 
   el.generateError.hidden = true;
-  showScreen('loading');
+  setLoadingPhase('generate.loading');
+  setGenerating(true);
+  el.loadingScreen.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 
   try {
     const locale = getLocale();
     const exclusions = buildExclusionTitles();
     const recs = await getRecommendations(state.profile, exclusions, state.apiKey, locale);
-    const { validated, discardedCount } = await validateRecommendations(recs, readBooksForDedupe());
+    setLoadingPhase('generate.loadingCatalog', { done: 0, total: recs.length });
+    const { validated, discardedCount } = await validateRecommendations(
+      recs,
+      readBooksForDedupe(),
+      (done, total) => setLoadingPhase('generate.loadingCatalog', { done, total })
+    );
 
     state.results = validated;
     state.discardedCount = discardedCount;
@@ -166,9 +290,11 @@ async function handleGenerate() {
     });
 
     renderCurrentResults();
+    setGenerating(false);
     showScreen('results');
   } catch (err) {
-    showScreen('setup');
+    setGenerating(false);
+    showScreen(state.results.length ? 'results' : 'idle');
     const code = /** @type {any} */ (err)?.code;
     if (code === 'quota') {
       el.generateError.textContent = t('generate.error.quota');
@@ -231,12 +357,24 @@ function removeCardFromResults(title, author) {
   renderCurrentResults();
 }
 
+// Restores the library snapshot so regenerating works after a reload
+// without re-attaching the CSV. The batch is restored separately, and
+// either can be present without the other.
+function loadLibrarySnapshot() {
+  const snapshot = storage.getLibrary();
+  if (!snapshot?.profile) return;
+  state.profile = snapshot.profile;
+  state.shelfTitles = snapshot.shelfTitles ?? { read: [], toRead: [] };
+  state.librarySavedAt = snapshot.savedAt ?? null;
+}
+
 function loadCachedBatch() {
   const cached = storage.getLastBatch();
   if (!cached) return;
   state.results = cached.recommendations;
   state.resultsLocale = cached.locale;
   renderCurrentResults();
+  maybeEnableGenerate();
   showScreen('results');
 }
 
@@ -247,6 +385,10 @@ function wireEvents() {
     applyTranslations(document);
     updateLangToggleLabel();
     renderCurrentResults();
+    updateLibraryNote();
+    // applyTranslations resets every [data-i18n] node to its idle string,
+    // including the regenerate button, so restate the busy labels.
+    if (state.generating) setGenerating(true);
   });
 
   el.csvInput.addEventListener('change', () => {
@@ -255,7 +397,9 @@ function wireEvents() {
   });
 
   el.saveKeyBtn.addEventListener('click', handleSaveKey);
+  el.changeKeyBtn.addEventListener('click', handleChangeKey);
   el.forgetKeyBtn.addEventListener('click', handleForgetKey);
+  el.clearDataBtn.addEventListener('click', handleClearData);
   el.generateBtn.addEventListener('click', handleGenerate);
   el.regenerateBtn.addEventListener('click', handleGenerate);
 
@@ -269,7 +413,8 @@ function wireEvents() {
 function init() {
   applyTranslations(document);
   updateLangToggleLabel();
-  if (state.apiKey) el.forgetKeyBtn.hidden = false;
+  updateKeyUI();
+  loadLibrarySnapshot();
   maybeEnableGenerate();
   wireEvents();
   loadCachedBatch();

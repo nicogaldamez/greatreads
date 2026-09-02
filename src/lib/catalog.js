@@ -159,16 +159,20 @@ async function validateOne(rec) {
  * @param {(() => Promise<T>)[]} tasks
  * @param {number} concurrency
  * @param {number} delayMs
+ * @param {(done: number, total: number) => void} [onProgress] called after each task settles
  * @returns {Promise<T[]>}
  */
-async function runPooled(tasks, concurrency, delayMs) {
+async function runPooled(tasks, concurrency, delayMs, onProgress) {
   const results = new Array(tasks.length);
   let next = 0;
+  let done = 0;
 
   async function worker() {
     while (next < tasks.length) {
       const i = next++;
       results[i] = await tasks[i]();
+      done++;
+      onProgress?.(done, tasks.length);
       if (delayMs > 0) {
         await new Promise((resolve) => setTimeout(resolve, delayMs));
       }
@@ -186,13 +190,20 @@ async function runPooled(tasks, concurrency, delayMs) {
  * de-duplicating against the reader's already-read books.
  * @param {Recommendation[]} recommendations
  * @param {{title: string, author: string}[]} readBooks
+ * @param {(done: number, total: number) => void} [onProgress] called as each
+ *   recommendation finishes its catalog lookup, for UI progress reporting
  * @returns {Promise<{validated: ValidatedRecommendation[], discardedCount: number}>}
  */
-export async function validateRecommendations(recommendations, readBooks = []) {
+export async function validateRecommendations(recommendations, readBooks = [], onProgress) {
   const readKeys = new Set(readBooks.map((b) => cacheKey(b.title, b.author)));
 
   const tasks = recommendations.map((rec) => () => validateOne(rec));
-  const results = await runPooled(tasks, OPEN_LIBRARY_CONCURRENCY, OPEN_LIBRARY_DELAY_MS);
+  const results = await runPooled(
+    tasks,
+    OPEN_LIBRARY_CONCURRENCY,
+    OPEN_LIBRARY_DELAY_MS,
+    onProgress
+  );
 
   const validated = [];
   let discardedCount = 0;

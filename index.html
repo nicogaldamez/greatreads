@@ -4,6 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bookito</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;700&display=swap"
+  />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -31,13 +37,30 @@
       <div class="step-card">
         <h2 data-i18n="key.title"></h2>
         <p class="hint" data-i18n="key.instructions"></p>
-        <a id="get-key-link" href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener"
-           data-i18n="key.getKeyLink"></a>
-        <div class="key-row">
-          <input type="password" id="api-key-input" data-i18n-attr="placeholder:key.placeholder" />
-          <button id="save-key-btn" type="button" data-i18n="key.save"></button>
+        <div id="key-setup">
+          <a id="get-key-link" href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener"
+             data-i18n="key.getKeyLink"></a>
+          <details class="key-help">
+            <summary data-i18n="key.help.summary"></summary>
+            <ol class="key-help-steps">
+              <li data-i18n="key.help.step1"></li>
+              <li data-i18n="key.help.step2"></li>
+              <li data-i18n="key.help.step3"></li>
+              <li data-i18n="key.help.step4"></li>
+            </ol>
+            <p class="hint" data-i18n="key.help.freeNote"></p>
+            <p class="hint" data-i18n="key.help.secretNote"></p>
+          </details>
+          <div class="key-row">
+            <input type="password" id="api-key-input" data-i18n-attr="placeholder:key.placeholder" />
+            <button id="save-key-btn" type="button" data-i18n="key.save"></button>
+          </div>
         </div>
-        <button id="forget-key-btn" type="button" class="link-btn" data-i18n="key.forget" hidden></button>
+        <p id="key-saved-note" class="status-line" data-i18n="key.alreadySaved" hidden></p>
+        <div id="key-saved-actions" class="key-saved-actions" hidden>
+          <button id="change-key-btn" type="button" class="link-btn" data-i18n="key.change"></button>
+          <button id="forget-key-btn" type="button" class="link-btn" data-i18n="key.forget"></button>
+        </div>
         <p id="key-status" class="status-line" hidden></p>
         <p id="key-error" class="error-line" data-i18n="key.invalid" hidden></p>
       </div>
@@ -46,8 +69,9 @@
       <p id="generate-error" class="error-line" hidden></p>
     </section>
 
-    <section id="loading-screen" class="loading-screen" hidden>
-      <p data-i18n="generate.loading"></p>
+    <section id="loading-screen" class="loading-screen" hidden aria-live="polite">
+      <span class="spinner" aria-hidden="true"></span>
+      <p id="loading-text" data-i18n="generate.loading"></p>
     </section>
 
     <section id="results-screen" class="results-screen" hidden>
@@ -60,6 +84,7 @@
         </div>
         <button id="regenerate-btn" type="button" class="link-btn" data-i18n="generate.regenerate"></button>
       </div>
+      <p id="regenerate-note" class="hint" hidden></p>
       <p id="discarded-note" class="hint" hidden></p>
       <div id="results-grid" class="results-grid"></div>
       <p id="results-empty" class="hint" data-i18n="results.empty" hidden></p>
@@ -90,7 +115,24 @@
 
   <footer class="site-footer">
     <p class="privacy-note" data-i18n="privacy.note"></p>
-    <a href="https://github.com" target="_blank" rel="noopener" data-i18n="footer.sourceLink"></a>
+    <details class="faq">
+      <summary data-i18n="faq.title"></summary>
+      <dl class="faq-list">
+        <dt data-i18n="faq.q.stored"></dt>
+        <dd data-i18n="faq.a.stored"></dd>
+        <dt data-i18n="faq.q.discarded"></dt>
+        <dd data-i18n="faq.a.discarded"></dd>
+        <dt data-i18n="faq.q.cost"></dt>
+        <dd data-i18n="faq.a.cost"></dd>
+        <dt data-i18n="faq.q.reset"></dt>
+        <dd data-i18n="faq.a.reset"></dd>
+      </dl>
+    </details>
+    <div class="footer-actions">
+      <a href="https://github.com" target="_blank" rel="noopener" data-i18n="footer.sourceLink"></a>
+      <button id="clear-data-btn" type="button" class="link-btn danger-btn"
+              data-i18n="privacy.clearAll"></button>
+    </div>
   </footer>
 
   <script type="module" src="src/main.js"></script>

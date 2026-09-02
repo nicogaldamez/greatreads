@@ -1,4 +1,4 @@
-# Book recommender desde export de Goodreads — plan de build
+# Book recommender desde export de Goodreads: plan de build
 
 App estática: JS puro con módulos ES nativos, CSS puro, sin build step, sin
 dependencias, sin backend, sin cuentas, sin base de datos. El usuario sube su
@@ -14,7 +14,7 @@ recomendaciones validadas contra un catálogo real.
 | Stack | JS puro + módulos ES nativos + CSS puro | Sin build, sin `node_modules`, sin lockfile que envejezca. |
 | Tipos | JSDoc `@typedef` | Autocompletado en el editor sin compilar nada. |
 | Tests | `node --test` sobre los mismos `.js` | Los módulos ES corren igual en Node y en el browser. |
-| API key | BYOK — el usuario pone la suya, va a localStorage | Único camino a costo 0 con usuarios reales. |
+| API key | BYOK, el usuario pone la suya, va a localStorage | Único camino a costo 0 con usuarios reales. |
 | LLM | Gemini Flash (free tier, sin tarjeta) | Llamado directo desde el browser, tiene CORS. |
 | Catálogo | Open Library, fallback Google Books | Sin key, sin cuota, con CORS. |
 | CSV | Parseado 100% en el browser | Nunca sube nada. Es la historia de privacidad. |
@@ -26,7 +26,7 @@ compartida, soporte multi-proveedor de LLM, PWA, dark mode toggle.
 
 ---
 
-## Fase 0 — Scaffold
+## Fase 0: Scaffold
 
 Sin `npm create` nada. Carpeta vacía y estos archivos:
 
@@ -67,7 +67,7 @@ Dev server: hace falta HTTP, `file://` rompe los módulos por CORS.
 
 ---
 
-## Fase 1 — Parseo del CSV (sin red, todo testeable)
+## Fase 1: Parseo del CSV (sin red, todo testeable)
 
 Acá está el único costo real de ir sin dependencias: hay que escribir el parser.
 Son ~40 líneas de máquina de estados RFC 4180, y **no se puede resolver con
@@ -129,7 +129,7 @@ ISBN con fórmula, rating 0 y Date Read vacío parsea correcto.
 
 ---
 
-## Fase 2 — Compresión del perfil
+## Fase 2: Compresión del perfil
 
 No mandarle 800 libros al modelo. Objetivo: ~60 libros bien elegidos, que dan
 mejores recomendaciones que el CSV entero y bajan los tokens un orden de
@@ -163,7 +163,7 @@ devuelve ≤60 refs y el JSON serializado pesa menos de 6 KB.
 
 ---
 
-## Fase 3 — Gestión de la key
+## Fase 3: Gestión de la key
 
 - Pantalla inicial con dos pasos: subir CSV, pegar key.
 - Link directo a AI Studio para sacar la key gratis, sin tarjeta.
@@ -178,7 +178,7 @@ y deprecia modelos seguido; que cambiarlo sea una línea.
 
 ---
 
-## Fase 4 — La llamada al LLM
+## Fase 4: La llamada al LLM
 
 Endpoint: `generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key=...`
 
@@ -188,7 +188,7 @@ Reglas del prompt:
    strippear ` ```json ` si aparece.
 2. Pasar la lista de exclusión (leídos + to-read, normalizados) y pedir
    explícitamente que no recomiende nada de ahí. Igual filtrar del lado del
-   cliente — el modelo va a fallar en esto.
+   cliente, porque el modelo va a fallar en esto.
 3. Pedir **mezcla deliberada**: ~60% apuestas seguras, ~40% laterales, y que
    marque cuál es cuál. Si no lo pedís, te devuelve doce variantes del último 5★.
 4. Cada recomendación tiene que justificarse **contra libros específicos del
@@ -196,7 +196,7 @@ Reglas del prompt:
    "porque le pusiste 5★ a X y 1★ a Y" sí.
 5. **Solo `reason` se traduce.** El idioma activo entra al prompt y define en qué
    idioma viene la justificación. `title` y `author` vienen siempre en la forma
-   con la que el libro está catalogado, nunca traducidos — ver la sección
+   con la que el libro está catalogado, nunca traducidos. Ver la sección
    bilingüe más abajo, es la trampa principal.
 
 ```js
@@ -215,7 +215,7 @@ Pedir ~20 para quedarte con ~12 después de validar.
 
 ---
 
-## Fase 5 — Validación contra catálogo (la fase que define si la app sirve)
+## Fase 5: Validación contra catálogo (la fase que define si la app sirve)
 
 El modelo **va a inventar títulos** y va a atribuir libros al autor equivocado
 con total seguridad. Sin este paso la app se prueba una vez y no se vuelve.
@@ -229,7 +229,7 @@ Para cada recomendación:
    algún autor del resultado.
 4. Si no matchea, probar Google Books como fallback.
 5. Si no matchea en ninguno, **descartar** y contar. Mostrar el contador en un
-   detalle chico — es información honesta y además te sirve a vos para comparar
+   detalle chico, pero es información honesta y además te sirve a vos para comparar
    modelos y versiones del prompt.
 6. Al que matchea, adjuntarle `cover_i` (portada), `key` (link a Open Library) y
    `first_publish_year`.
@@ -249,7 +249,7 @@ los 5 se descartan.
 
 ---
 
-## Fase 6 — UI sin framework
+## Fase 6: UI sin framework
 
 Un objeto `state` y una función `render()` que redibuja el contenedor de
 resultados. Es una sola lista; redibujar todo el contenedor es más que
@@ -307,7 +307,7 @@ Para el HTML estático, marcá los nodos con atributos y hacé una sola pasada:
 `[data-i18n-attr]` para placeholders, `aria-label` y `title`. Se llama al cargar
 y en cada cambio de idioma. Así el `index.html` queda legible y no tenés `t()`
 desparramado por todos lados. Actualizá también `document.documentElement.lang`
-— importa para lectores de pantalla y para el corrector ortográfico.
+Importa para lectores de pantalla y para el corrector ortográfico.
 
 Números y fechas con `Intl.NumberFormat` e `Intl.DateTimeFormat` pasándoles el
 locale activo. Plurales con `Intl.PluralRules`, no a mano: "1 book / 2 books" y
@@ -331,7 +331,7 @@ castellano que verifique que el título sobrevive el ida y vuelta.
 Las recomendaciones cacheadas tienen el `reason` en el idioma en que se
 generaron. Guardá el locale junto con la tanda en `localStorage`.
 
-Al cambiar de idioma, **no dispares una llamada nueva automáticamente** — le
+Al cambiar de idioma, **no dispares una llamada nueva automáticamente**, le
 quemás cuota al usuario sin que la pida. La UI se traduce entera, las
 justificaciones viejas quedan en su idioma con un aviso chico, y hay un botón
 para regenerar si le importa. La próxima tanda ya sale en el idioma nuevo.
@@ -356,7 +356,7 @@ las strings castellanas más largas, no con las inglesas: los botones y los badg
 
 ---
 
-## Fase 7 — Open source y deploy
+## Fase 7: Open source y deploy
 
 - `README` con: qué hace, el paso a paso para sacar la key gratis, cómo bajar el
   export de Goodreads (My Books → Import/Export → Export Library), y una sección

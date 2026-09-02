@@ -1,17 +1,21 @@
 :root {
-  --color-bg: #faf8f5;
+  --color-ink: #14110d;
+  --color-paper: #fff2d6;
   --color-surface: #ffffff;
-  --color-text: #201c16;
-  --color-text-muted: #6b6255;
-  --color-border: #e4ddd1;
-  --color-accent: #b5581f;
-  --color-accent-contrast: #ffffff;
-  --color-safe: #2f6b4f;
-  --color-safe-bg: #e4f2ea;
-  --color-stretch: #7a4fb5;
-  --color-stretch-bg: #f0e8fb;
-  --color-error: #b3261e;
-  --color-error-bg: #fbe9e7;
+  --color-text: #14110d;
+  --color-text-muted: #5a5340;
+  --color-border: var(--color-ink);
+  --color-accent: #ff5a36;
+  --color-accent-contrast: #14110d;
+  --color-safe: #14110d;
+  --color-safe-bg: #7ad1c4;
+  --color-stretch: #14110d;
+  --color-stretch-bg: #ffb5e8;
+  --color-error: #7a1d0a;
+  --color-error-bg: #ffd1c2;
+  --color-cover-1: #ffb5e8;
+  --color-cover-2: #7ad1c4;
+  --color-cover-3: #ffd166;
 
   --space-1: 0.25rem;
   --space-2: 0.5rem;
@@ -19,25 +23,33 @@
   --space-4: 1.5rem;
   --space-5: 2.5rem;
 
-  --radius: 0.5rem;
-  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --radius: 4px;
+  --border-w: 3px;
+  --shadow-offset: 8px;
+  --hard-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--color-ink);
+
+  --font-display: 'Archivo Black', system-ui, sans-serif;
+  --font-sans: 'Space Grotesk', system-ui, sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-bg: #17140f;
-    --color-surface: #221e17;
-    --color-text: #f2ede4;
-    --color-text-muted: #a89c8a;
-    --color-border: #3a3428;
-    --color-accent: #e08a4c;
-    --color-accent-contrast: #17140f;
-    --color-safe: #7cd6ac;
-    --color-safe-bg: #1c3a2c;
-    --color-stretch: #c6a6f0;
-    --color-stretch-bg: #35234f;
-    --color-error: #f2a49c;
-    --color-error-bg: #4a201c;
+    --color-ink: #fff2d6;
+    --color-paper: #14110d;
+    --color-surface: #201b13;
+    --color-text: #fff2d6;
+    --color-text-muted: #b9ad8c;
+    --color-accent: #ff7a54;
+    --color-accent-contrast: #14110d;
+    --color-safe: #14110d;
+    --color-safe-bg: #6fc3b4;
+    --color-stretch: #14110d;
+    --color-stretch-bg: #f0a8e0;
+    --color-error: #ffd1c2;
+    --color-error-bg: #4a231a;
+    --color-cover-1: #b5488c;
+    --color-cover-2: #3a8e7c;
+    --color-cover-3: #c99a34;
   }
 }
 
@@ -45,10 +57,18 @@
   box-sizing: border-box;
 }
 
+/* The UA rule for [hidden] is display:none, but ANY author `display`
+   declaration outranks it, so a class like .loading-screen { display: flex }
+   silently un-hides the element. Everything here toggles visibility through
+   the hidden attribute, so make it win outright. */
+[hidden] {
+  display: none !important;
+}
+
 body {
   margin: 0;
   font-family: var(--font-sans);
-  background: var(--color-bg);
+  background: var(--color-paper);
   color: var(--color-text);
   line-height: 1.5;
 }
@@ -61,32 +81,45 @@ main {
 
 .site-header {
   position: relative;
-  padding: var(--space-4);
-  border-bottom: 1px solid var(--color-border);
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-ink);
+  color: var(--color-paper);
 }
 
 .site-header h1 {
-  margin: 0 0 var(--space-1);
-  font-size: 1.75rem;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  text-align: center;
 }
 
 .tagline {
   margin: 0;
-  color: var(--color-text-muted);
+  color: inherit;
+  opacity: 0.75;
+  text-align: center;
+  text-wrap: balance;
 }
 
 .lang-toggle {
   position: absolute;
   top: var(--space-3);
   right: var(--space-3);
-  padding: var(--space-1) var(--space-2);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  color: var(--color-text);
+  padding: var(--space-1) var(--space-3);
+  background: var(--color-accent);
+  border: var(--border-w) solid var(--color-paper);
+  border-radius: 999px;
+  color: var(--color-accent-contrast);
   cursor: pointer;
-  font-weight: 600;
+  font-weight: 700;
+  font-family: var(--font-sans);
 }
 
 .setup-screen {
@@ -98,14 +131,19 @@ main {
 
 .step-card {
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border: var(--border-w) solid var(--color-border);
   border-radius: var(--radius);
+  box-shadow: var(--hard-shadow);
   padding: var(--space-4);
+  color: var(--color-text);
 }
 
 .step-card h2 {
   margin-top: 0;
+  font-family: var(--font-display);
   font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
 }
 
 .hint {
@@ -116,10 +154,42 @@ main {
 .file-picker {
   display: inline-block;
   padding: var(--space-2) var(--space-3);
-  background: var(--color-bg);
-  border: 1px dashed var(--color-border);
+  background: var(--color-cover-3);
+  color: var(--color-ink);
+  border: var(--border-w) solid var(--color-border);
   border-radius: var(--radius);
+  font-weight: 700;
   cursor: pointer;
+}
+
+.key-help {
+  margin-top: var(--space-3);
+  border: var(--border-w) solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  padding: var(--space-2) var(--space-3);
+}
+
+.key-help summary {
+  cursor: pointer;
+  font-weight: 700;
+  list-style-position: inside;
+}
+
+.key-help[open] summary {
+  margin-bottom: var(--space-2);
+}
+
+.key-help-steps {
+  margin: 0 0 var(--space-2);
+  padding-left: 1.25rem;
+  display: grid;
+  gap: var(--space-1);
+  font-size: 0.9rem;
+}
+
+.key-help .hint + .hint {
+  margin-top: var(--space-1);
 }
 
 .key-row {
@@ -132,10 +202,11 @@ main {
   flex: 1;
   min-width: 0;
   padding: var(--space-2);
-  border: 1px solid var(--color-border);
+  border: var(--border-w) solid var(--color-border);
   border-radius: var(--radius);
-  background: var(--color-bg);
+  background: var(--color-paper);
   color: var(--color-text);
+  font-family: inherit;
 }
 
 button {
@@ -148,53 +219,133 @@ button {
   padding: var(--space-3);
   background: var(--color-accent);
   color: var(--color-accent-contrast);
-  border: none;
+  border: var(--border-w) solid var(--color-border);
   border-radius: var(--radius);
-  font-weight: 700;
+  box-shadow: var(--hard-shadow);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
   cursor: pointer;
 }
 
 .primary-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  box-shadow: none;
+}
+
+.link-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+.footer-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+/* Destructive and irreversible, so it reads as a warning rather than
+   sitting at the same weight as the source link next to it. */
+.danger-btn {
+  color: var(--color-error);
+  font-weight: 700;
 }
 
 .key-row button {
   padding: var(--space-2) var(--space-3);
-  background: var(--color-accent);
-  color: var(--color-accent-contrast);
-  border: none;
+  background: var(--color-safe-bg);
+  color: var(--color-ink);
+  border: var(--border-w) solid var(--color-border);
   border-radius: var(--radius);
   cursor: pointer;
   white-space: nowrap;
+  font-weight: 700;
 }
 
 .link-btn {
   background: none;
   border: none;
-  color: var(--color-accent);
+  color: var(--color-text);
   text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 700;
   cursor: pointer;
   padding: 0;
 }
 
+.key-saved-actions {
+  display: flex;
+  gap: var(--space-3);
+}
+
 .status-line {
-  color: var(--color-safe);
+  color: var(--color-safe-bg);
+  font-weight: 700;
   font-size: 0.9rem;
 }
 
 .error-line {
   color: var(--color-error);
   background: var(--color-error-bg);
+  border: var(--border-w) solid var(--color-border);
   padding: var(--space-2);
   border-radius: var(--radius);
   font-size: 0.9rem;
+  font-weight: 500;
 }
 
 .loading-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
   text-align: center;
   padding: var(--space-5);
   color: var(--color-text-muted);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+}
+
+.loading-screen p {
+  margin: 0;
+}
+
+.spinner {
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 3px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Still turning, just calmly: a frozen spinner would read as a hang. */
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation-duration: 2.4s;
+  }
+}
+
+/* Regenerating keeps the old batch on screen, dimmed and inert, so the
+   page never goes blank while the next one is on its way. */
+.results-screen.is-busy {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.results-screen {
+  margin-top: var(--space-5);
 }
 
 .results-header {
@@ -208,38 +359,43 @@ button {
 .results-header h2 {
   margin: 0;
   flex: 1;
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
 }
 
 .filter-row {
   display: flex;
-  gap: var(--space-1);
+  gap: var(--space-2);
 }
 
 .filter-btn {
   padding: var(--space-1) var(--space-3);
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border: var(--border-w) solid var(--color-border);
   border-radius: 999px;
   color: var(--color-text);
+  font-weight: 700;
   cursor: pointer;
 }
 
 .filter-btn.active {
-  background: var(--color-accent);
-  color: var(--color-accent-contrast);
-  border-color: var(--color-accent);
+  background: var(--color-ink);
+  color: var(--color-paper);
+  border-color: var(--color-ink);
 }
 
 .results-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: var(--space-3);
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-4);
 }
 
 .book-card {
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border: var(--border-w) solid var(--color-border);
   border-radius: var(--radius);
+  box-shadow: var(--hard-shadow);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -249,13 +405,32 @@ button {
   width: 100%;
   aspect-ratio: 2 / 3;
   object-fit: cover;
-  background: var(--color-bg);
+  background: var(--color-cover-1);
+  border-bottom: var(--border-w) solid var(--color-border);
 }
 
 .book-card .cover-placeholder {
   width: 100%;
   aspect-ratio: 2 / 3;
-  background: var(--color-bg);
+  background: var(--color-cover-2);
+  border-bottom: var(--border-w) solid var(--color-border);
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgba(20, 17, 13, 0.12) 0 10px,
+    transparent 10px 20px
+  );
+}
+
+.results-grid .book-card:nth-child(3n + 1) .cover-placeholder {
+  background-color: var(--color-cover-1);
+}
+
+.results-grid .book-card:nth-child(3n + 2) .cover-placeholder {
+  background-color: var(--color-cover-2);
+}
+
+.results-grid .book-card:nth-child(3n) .cover-placeholder {
+  background-color: var(--color-cover-3);
 }
 
 .card-body {
@@ -270,7 +445,9 @@ button {
   align-self: flex-start;
   font-size: 0.75rem;
   font-weight: 700;
-  padding: 0.15rem 0.5rem;
+  text-transform: uppercase;
+  padding: 0.2rem 0.6rem;
+  border: 2px solid var(--color-border);
   border-radius: 999px;
 }
 
@@ -286,7 +463,9 @@ button {
 
 .book-card .title {
   margin: var(--space-1) 0 0;
+  font-family: var(--font-display);
   font-size: 1rem;
+  line-height: 1.2;
 }
 
 .book-card .author {
@@ -311,6 +490,12 @@ button {
   flex-direction: column;
   gap: var(--space-1);
   font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.card-links a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .card-actions {
@@ -321,13 +506,20 @@ button {
 
 .card-actions button {
   flex: 1;
-  padding: var(--space-1);
-  font-size: 0.8rem;
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
+  padding: var(--space-2) var(--space-1);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
   border-radius: var(--radius);
   color: var(--color-text);
   cursor: pointer;
+}
+
+.card-actions .mark-read-btn {
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
 }
 
 .site-footer {
@@ -335,4 +527,42 @@ button {
   padding: var(--space-4);
   color: var(--color-text-muted);
   font-size: 0.85rem;
+  border-top: var(--border-w) solid var(--color-border);
+}
+
+.faq {
+  max-width: 46rem;
+  margin: var(--space-3) auto;
+  text-align: left;
+}
+
+.faq summary {
+  cursor: pointer;
+  font-weight: 700;
+  text-align: center;
+}
+
+.faq-list {
+  margin: var(--space-3) 0 0;
+}
+
+.faq-list dt {
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.faq-list dd {
+  margin: var(--space-1) 0 var(--space-3);
+}
+
+.faq-list dd:last-child {
+  margin-bottom: 0;
+}
+
+a {
+  color: var(--color-text);
+}
+
+a:hover {
+  color: var(--color-accent);
 }

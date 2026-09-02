@@ -13,7 +13,7 @@ function detectLocale() {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored === 'en' || stored === 'es') return stored;
   } catch {
-    // localStorage unavailable (e.g. tests) — fall through.
+    // localStorage unavailable (e.g. tests), so fall through.
   }
   const nav = typeof navigator !== 'undefined' ? navigator.language : 'en';
   return nav && nav.toLowerCase().startsWith('es') ? 'es' : 'en';
@@ -30,7 +30,7 @@ export function setLocale(locale) {
   try {
     localStorage.setItem(STORAGE_KEY, locale);
   } catch {
-    // Ignore storage failures — locale still applies for this session.
+    // Ignore storage failures; locale still applies for this session.
   }
   if (typeof document !== 'undefined') {
     document.documentElement.lang = locale;

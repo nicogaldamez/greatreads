@@ -60,7 +60,7 @@ export function renderCard(item, opts = { staleReason: false }) {
 }
 
 /**
- * Redraws the whole results grid. No diffing — it's a single list, and
+ * Redraws the whole results grid. No diffing, since it's a single list, and
  * this is more than fast enough.
  * @param {HTMLElement} container
  * @param {ValidatedRecommendation[]} items

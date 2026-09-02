@@ -9,6 +9,7 @@ const KEYS = {
   lastBatch: 'bookito.lastBatch',
   exclusions: 'bookito.exclusions',
   catalogCache: 'bookito.catalogCache',
+  library: 'bookito.library',
 };
 
 /**
@@ -87,6 +88,28 @@ export function setExclusions(exclusions) {
 }
 
 /**
+ * The library snapshot is the smallest slice of a Goodreads export that
+ * regenerating needs: the compressed taste profile plus the shelf titles
+ * used for exclusions and de-duplication. Per-book ratings, dates read,
+ * shelves and ISBNs are deliberately left out, and unlike a raw parsed
+ * export it is plain JSON (no Date objects to survive a round-trip).
+ * @typedef {Object} LibrarySnapshot
+ * @property {import('./profile.js').TasteProfile} profile
+ * @property {{read: string[], toRead: string[]}} shelfTitles
+ * @property {string} savedAt ISO timestamp of the upload it came from
+ */
+
+/** @returns {LibrarySnapshot|null} */
+export function getLibrary() {
+  return get(KEYS.library, null);
+}
+
+/** @param {LibrarySnapshot} snapshot */
+export function setLibrary(snapshot) {
+  return set(KEYS.library, snapshot);
+}
+
+/**
  * @returns {Record<string, object>}
  */
 export function getCatalogCache() {
@@ -96,4 +119,15 @@ export function getCatalogCache() {
 /** @param {Record<string, object>} cache */
 export function setCatalogCache(cache) {
   return set(KEYS.catalogCache, cache);
+}
+
+/**
+ * Wipes every trace of the user from this browser. Backs the "erase
+ * everything" button, which is the counterpart to storing a library
+ * snapshot: whatever we keep, the user can remove in one click.
+ */
+export function clearAll() {
+  for (const key of Object.values(KEYS)) {
+    remove(key);
+  }
 }
