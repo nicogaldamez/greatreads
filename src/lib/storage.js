@@ -121,7 +121,7 @@ export function setCatalogCache(cache) {
   return set(KEYS.catalogCache, cache);
 }
 
-/** Wipes every Great Reads key from this browser. */
+/** Wipes every GreatReads key from this browser. */
 export function clearAll() {
   for (const key of Object.values(KEYS)) {
     remove(key);

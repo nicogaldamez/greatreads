@@ -1,4 +1,4 @@
-# Great Reads
+# GreatReads
 
 *[Read in English](README.md)*
 
@@ -39,7 +39,7 @@ un archivo `goodreads_library_export.csv`. Subí ese archivo.
 
 ## Cómo conseguir una API key gratis de Gemini
 
-Great Reads es BYOK (traé tu propia key): no hay una key compartida de demo
+GreatReads es BYOK (traé tu propia key): no hay una key compartida de demo
 ni un backend que la guarde por vos. Conseguir una lleva un minuto:
 
 1. Entrá a [Google AI Studio](https://aistudio.google.com/app/apikey) e
@@ -47,24 +47,24 @@ ni un backend que la guarde por vos. Conseguir una lleva un minuto:
 2. Andá a la sección de API keys y hacé clic en **Create API key**.
 3. Elegí un proyecto de Google Cloud que ya tengas, o dejá que AI Studio te
    cree uno. Cualquiera de las dos sirve.
-4. Copiá la key que te muestra y pegala en el paso 2 de Great Reads.
+4. Copiá la key que te muestra y pegala en el paso 2 de GreatReads.
 
 El nivel gratuito no pide tarjeta de crédito. Tiene límites por minuto y
 por día, de sobra para unas cuantas tandas de recomendaciones.
 
 Tratá la key como una contraseña: no la compartas ni la subas a ningún
 repo. Podés borrarla desde AI Studio cuando quieras, y el botón "olvidar mi
-key" de Great Reads la elimina de este navegador.
+key" de GreatReads la elimina de este navegador.
 
 ## Preguntas frecuentes
 
 **¿Se sube mi biblioteca a algún lado?**
 No. El CSV se parsea en tu navegador y nunca sale de ahí. Los únicos
-llamados de red que hace Great Reads son a la API de Gemini de Google (tu
+llamados de red que hace GreatReads son a la API de Gemini de Google (tu
 perfil de gustos, no el archivo crudo), y a Open Library y Google Books
 para validar los resultados.
 
-**¿Qué guarda Great Reads en mi máquina?**
+**¿Qué guarda GreatReads en mi máquina?**
 Cinco entradas de `localStorage`: tu API key (`greatreads.apiKey`), tu última
 tanda de recomendaciones (`greatreads.lastBatch`), un resumen comprimido de tu
 biblioteca (`greatreads.library`), los libros que marcaste como leídos o sin
@@ -111,7 +111,7 @@ acotado y borra solo la key.
 
 **¿Necesito una cuenta de Goodreads?**
 Necesitás tu biblioteca de Goodreads exportada (My Books → Import/Export →
-Export Library). Great Reads nunca habla con Goodreads directamente; su API
+Export Library). GreatReads nunca habla con Goodreads directamente; su API
 está dada de baja desde diciembre de 2020.
 
 ## Privacidad
@@ -119,7 +119,7 @@ está dada de baja desde diciembre de 2020.
 Todo pasa en tu navegador. El CSV se parsea localmente y nunca se sube a
 ningún lado. Tu API key se guarda en el `localStorage` de tu máquina y se
 usa solo para llamados directos a la API de Gemini de Google. No hay
-ningún servidor de Great Reads en el medio. Si estás en una máquina
+ningún servidor de GreatReads en el medio. Si estás en una máquina
 compartida, usá el botón "olvidar mi key" cuando termines.
 
 ## Correr los tests
