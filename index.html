@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bookito</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <h1 data-i18n="app.title">Bookito</h1>
+    <p class="tagline" data-i18n="app.tagline"></p>
+    <button id="lang-toggle" class="lang-toggle" type="button" aria-label="Toggle language">
+      <span id="lang-toggle-label">ES</span>
+    </button>
+  </header>
+
+  <main>
+    <section id="setup-screen" class="setup-screen">
+      <div class="step-card">
+        <h2 data-i18n="upload.title"></h2>
+        <p class="hint" data-i18n="upload.instructions"></p>
+        <label class="file-picker">
+          <input type="file" id="csv-input" accept=".csv" hidden />
+          <span data-i18n="upload.button"></span>
+        </label>
+        <p id="upload-status" class="status-line" hidden></p>
+        <p id="upload-error" class="error-line" data-i18n="upload.parseError" hidden></p>
+      </div>
+
+      <div class="step-card">
+        <h2 data-i18n="key.title"></h2>
+        <p class="hint" data-i18n="key.instructions"></p>
+        <a id="get-key-link" href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener"
+           data-i18n="key.getKeyLink"></a>
+        <div class="key-row">
+          <input type="password" id="api-key-input" data-i18n-attr="placeholder:key.placeholder" />
+          <button id="save-key-btn" type="button" data-i18n="key.save"></button>
+        </div>
+        <button id="forget-key-btn" type="button" class="link-btn" data-i18n="key.forget" hidden></button>
+        <p id="key-status" class="status-line" hidden></p>
+        <p id="key-error" class="error-line" data-i18n="key.invalid" hidden></p>
+      </div>
+
+      <button id="generate-btn" class="primary-btn" type="button" data-i18n="generate.button" disabled></button>
+      <p id="generate-error" class="error-line" hidden></p>
+    </section>
+
+    <section id="loading-screen" class="loading-screen" hidden>
+      <p data-i18n="generate.loading"></p>
+    </section>
+
+    <section id="results-screen" class="results-screen" hidden>
+      <div class="results-header">
+        <h2 data-i18n="results.title"></h2>
+        <div class="filter-row" role="group">
+          <button class="filter-btn active" data-filter="all" data-i18n="results.filter.all"></button>
+          <button class="filter-btn" data-filter="safe" data-i18n="results.filter.safe"></button>
+          <button class="filter-btn" data-filter="stretch" data-i18n="results.filter.stretch"></button>
+        </div>
+        <button id="regenerate-btn" type="button" class="link-btn" data-i18n="generate.regenerate"></button>
+      </div>
+      <p id="discarded-note" class="hint" hidden></p>
+      <div id="results-grid" class="results-grid"></div>
+      <p id="results-empty" class="hint" data-i18n="results.empty" hidden></p>
+    </section>
+  </main>
+
+  <template id="card-template">
+    <article class="book-card">
+      <img class="cover" alt="" hidden />
+      <div class="cover-placeholder" hidden></div>
+      <div class="card-body">
+        <span class="badge"></span>
+        <h3 class="title"></h3>
+        <p class="author"></p>
+        <p class="reason"></p>
+        <p class="stale-note" data-i18n="results.staleReason" hidden></p>
+        <div class="card-links">
+          <a class="open-library-link" target="_blank" rel="noopener" data-i18n="results.openLibraryLink" hidden></a>
+          <a class="goodreads-link" target="_blank" rel="noopener" data-i18n="results.goodreadsSearchLink"></a>
+        </div>
+        <div class="card-actions">
+          <button class="mark-read-btn" data-i18n="results.markRead"></button>
+          <button class="mark-not-interested-btn" data-i18n="results.markNotInterested"></button>
+        </div>
+      </div>
+    </article>
+  </template>
+
+  <footer class="site-footer">
+    <p class="privacy-note" data-i18n="privacy.note"></p>
+    <a href="https://github.com" target="_blank" rel="noopener" data-i18n="footer.sourceLink"></a>
+  </footer>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
