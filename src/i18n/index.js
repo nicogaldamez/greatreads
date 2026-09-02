@@ -1,7 +1,7 @@
 import en from './en.js';
 import es from './es.js';
 
-const STORAGE_KEY = 'bookito.locale';
+const STORAGE_KEY = 'greatreads.locale';
 
 const dictionaries = { en, es };
 

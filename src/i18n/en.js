@@ -1,6 +1,6 @@
 export default {
-  'app.title': 'Bookito',
-  'app.tagline': 'Book recommendations from your Goodreads history',
+  'app.title': 'Great Reads',
+  'app.tagline': 'Your taste in books, turned into your next recommendation.',
   'app.langToggle.es': 'ES',
   'app.langToggle.en': 'EN',
 
@@ -12,7 +12,7 @@ export default {
 
   'key.title': '2. Paste your Gemini API key',
   'key.instructions':
-    'The key is stored only in this browser, on your own computer. Bookito has no server, so nothing you paste here ever leaves your machine except direct calls to Google.',
+    'The key is stored only in this browser, on your own computer. Great Reads has no server, so nothing you paste here ever leaves your machine except direct calls to Google.',
   'key.getKeyLink': 'Get a free API key from Google AI Studio',
   'key.help.summary': 'How do I get one?',
   'key.help.step1': 'Open Google AI Studio (link above) and sign in with any Google account.',
@@ -68,7 +68,7 @@ export default {
     'This erases your API key, your saved recommendations, your library summary and your read/not-interested marks from this browser. Continue?',
 
   'faq.title': 'Frequently asked questions',
-  'faq.q.stored': 'What does Bookito store on my machine?',
+  'faq.q.stored': 'What does Great Reads store on my machine?',
   'faq.a.stored':
     'Five things, saved right in your browser on your own computer: your API key, your last batch of recommendations, a compressed summary of your library, the books you marked as read or not interested, and a cache of catalog lookups. Nothing else, and nothing on any server.',
   'faq.q.discarded': 'Why did some recommendations disappear?',

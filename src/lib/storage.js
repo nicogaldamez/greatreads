@@ -5,11 +5,11 @@
  */
 
 const KEYS = {
-  apiKey: 'bookito.apiKey',
-  lastBatch: 'bookito.lastBatch',
-  exclusions: 'bookito.exclusions',
-  catalogCache: 'bookito.catalogCache',
-  library: 'bookito.library',
+  apiKey: 'greatreads.apiKey',
+  lastBatch: 'greatreads.lastBatch',
+  exclusions: 'greatreads.exclusions',
+  catalogCache: 'greatreads.catalogCache',
+  library: 'greatreads.library',
 };
 
 /**
@@ -121,7 +121,7 @@ export function setCatalogCache(cache) {
   return set(KEYS.catalogCache, cache);
 }
 
-/** Wipes every Bookito key from this browser. */
+/** Wipes every Great Reads key from this browser. */
 export function clearAll() {
   for (const key of Object.values(KEYS)) {
     remove(key);

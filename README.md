@@ -1,4 +1,4 @@
-# Bookito
+# Great Reads
 
 *[Leer en español](README.es.md)*
 
@@ -37,7 +37,7 @@ generates a `goodreads_library_export.csv` file. Upload that.
 
 ## Getting a free Gemini API key
 
-Bookito is BYOK (bring your own key): there's no shared demo key and no
+Great Reads is BYOK (bring your own key): there's no shared demo key and no
 backend to hold one for you. Getting one takes about a minute:
 
 1. Open [Google AI Studio](https://aistudio.google.com/app/apikey) and sign
@@ -45,23 +45,23 @@ backend to hold one for you. Getting one takes about a minute:
 2. Go to the API keys section and click **Create API key**.
 3. Pick an existing Google Cloud project, or let AI Studio create one for
    you. Either works.
-4. Copy the key it shows you and paste it into Bookito's step 2.
+4. Copy the key it shows you and paste it into Great Reads's step 2.
 
 The free tier needs no credit card. It has per-minute and per-day rate
 limits, which is plenty for a handful of recommendation runs.
 
 Treat the key like a password: don't share it or commit it anywhere. You
-can delete it from AI Studio at any time, and Bookito's "forget my key"
+can delete it from AI Studio at any time, and Great Reads's "forget my key"
 button clears it from this browser.
 
 ## FAQ
 
 **Does my library get uploaded anywhere?**
 No. The CSV is parsed in your browser and never leaves it. The only network
-calls Bookito makes are to Google's Gemini API (your taste profile, not the
+calls Great Reads makes are to Google's Gemini API (your taste profile, not the
 raw file), and to Open Library and Google Books to validate the results.
 
-**What does Bookito store on my machine?**
+**What does Great Reads store on my machine?**
 Five `localStorage` entries: your API key (`bookito.apiKey`), your last
 batch of recommendations (`bookito.lastBatch`), a compressed summary of
 your library (`bookito.library`), the books you marked as read or not
@@ -106,7 +106,7 @@ removes only the key.
 
 **Do I need a Goodreads account?**
 You need a Goodreads library export (My Books → Import/Export → Export
-Library). Bookito never talks to Goodreads itself; its API has been shut
+Library). Great Reads never talks to Goodreads itself; its API has been shut
 down since December 2020.
 
 ## Privacy
@@ -114,7 +114,7 @@ down since December 2020.
 Everything happens in your browser. The CSV is parsed locally and never
 uploaded anywhere. Your API key is stored in `localStorage` on your machine
 and used only for direct calls to Google's Gemini API. There is no
-Bookito server in between. If you're on a shared machine, use the "forget
+Great Reads server in between. If you're on a shared machine, use the "forget
 my key" button when you're done.
 
 ## Running the tests
