@@ -88,6 +88,12 @@ export default {
   'faq.q.reset': '¿Cómo borro todo?',
   'faq.a.reset':
     'Tocá "Borrar todos mis datos", al pie de la página: borra todo lo que guardamos, de una sola vez. "Olvidar mi key" hace menos: borra solo la key.',
+  'faq.q.kinds': '¿Qué diferencia hay entre una apuesta segura y una elección lateral?',
+  'faq.a.kinds':
+    'Las apuestas seguras caen de lleno dentro del gusto que ya muestra tu biblioteca. Las elecciones laterales se corren de eso a propósito (géneros vecinos, autores desconocidos, otras épocas), pero siempre conectando con algo que disfrutaste.',
+  'faq.q.remembers': '¿Recuerda los libros que marqué?',
+  'faq.a.remembers':
+    'Sí. "Ya lo leí" y "No me interesa" se guardan localmente y se le pasan a Gemini como exclusiones en la tanda siguiente, así esos libros no vuelven a aparecer.',
 
   'footer.sourceLink': 'Ver código fuente',
   'footer.xLink': '@nicogaldamez',

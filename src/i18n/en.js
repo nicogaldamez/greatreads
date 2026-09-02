@@ -82,6 +82,12 @@ export default {
   'faq.q.reset': 'How do I erase everything?',
   'faq.a.reset':
     'Tap "Erase all my data" at the bottom of the page: it erases everything we saved, all at once. "Forget my key" does less: it only erases the key.',
+  'faq.q.kinds': "What's the difference between a safe bet and a stretch pick?",
+  'faq.a.kinds':
+    "Safe bets land squarely within the taste your library already shows. Stretch picks deliberately move away from that (neighboring genres, authors you haven't tried, other eras), but always connecting back to something you enjoyed.",
+  'faq.q.remembers': 'Does it remember the books I marked?',
+  'faq.a.remembers':
+    'Yes. "I\'ve read this" and "Not interested" are saved locally and passed to Gemini as exclusions in the next batch, so those books don\'t come back.',
 
   'footer.sourceLink': 'View source',
   'footer.xLink': '@nicogaldamez',
