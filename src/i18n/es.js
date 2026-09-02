@@ -13,7 +13,7 @@ export default {
 
   'key.title': '2. Pegá tu API key de Gemini',
   'key.instructions':
-    'La key se guarda solo en este navegador, en tu propia computadora. Great Reads no tiene servidor, así que nada de lo que pegues acá sale de tu máquina, salvo los llamados directos a Google.',
+    'La usamos para generar tus recomendaciones con Gemini, el modelo de IA de Google. Se guarda solo en este navegador, en tu propia computadora. Great Reads no tiene servidor, así que nada de lo que pegues acá sale de tu máquina, salvo los llamados directos a Google.',
   'key.getKeyLink': 'Conseguí una API key gratis en Google AI Studio',
   'key.help.summary': '¿Cómo consigo una?',
   'key.help.step1':

@@ -12,7 +12,7 @@ export default {
 
   'key.title': '2. Paste your Gemini API key',
   'key.instructions':
-    'The key is stored only in this browser, on your own computer. Great Reads has no server, so nothing you paste here ever leaves your machine except direct calls to Google.',
+    "We use it to generate your recommendations with Gemini, Google's AI model. It's stored only in this browser, on your own computer. Great Reads has no server, so nothing you paste here ever leaves your machine except direct calls to Google.",
   'key.getKeyLink': 'Get a free API key from Google AI Studio',
   'key.help.summary': 'How do I get one?',
   'key.help.step1': 'Open Google AI Studio (link above) and sign in with any Google account.',
