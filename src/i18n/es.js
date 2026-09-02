@@ -90,4 +90,5 @@ export default {
     'Usá "Borrar todos mis datos" al pie de la página: elimina las cinco de una. "Olvidar mi key" es más acotado y borra solo la key.',
 
   'footer.sourceLink': 'Ver código fuente en GitHub',
+  'footer.xLink': '@nicogaldamez en X',
 };
