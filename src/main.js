@@ -49,17 +49,15 @@ const el = {
   filterBtns: document.querySelectorAll('.filter-btn'),
 };
 
-// The setup form stays on screen at all times. Generating results
-// doesn't replace it, it appends below it. This only toggles the loading
-// indicator and the results grid.
+// The setup form is never replaced: results are appended below it, so this
+// only toggles the loading indicator and the results grid.
 function showScreen(name) {
   el.loadingScreen.hidden = name !== 'loading';
   el.resultsScreen.hidden = name !== 'results';
 }
 
-// While a batch is generating, both entry points are locked so a second
-// click can't fire a concurrent Gemini call, and the previous results (if
-// any) stay on screen, dimmed, so a regenerate doesn't blank the page.
+// Both entry points lock while a batch runs, so a second click can't fire a
+// concurrent Gemini call.
 function setGenerating(busy) {
   state.generating = busy;
   el.generateBtn.disabled = busy || !canGenerate();
@@ -92,9 +90,8 @@ function maybeEnableGenerate() {
   updateLibraryNote();
 }
 
-// Two different notes share one slot: if there is no profile at all the
-// user must upload a CSV, and if the profile came from a stored snapshot
-// we say how old it is, since a regenerate will run against that.
+// Two messages share one slot: no profile at all means upload a CSV, and a
+// restored snapshot means saying how old the library behind it is.
 function updateLibraryNote() {
   if (!state.profile) {
     el.regenerateNote.textContent = t('generate.needsCsv');
@@ -119,10 +116,8 @@ function formatSavedAt(iso) {
   return new Intl.DateTimeFormat(getLocale(), { dateStyle: 'long' }).format(date);
 }
 
-// Once a key is saved, the "paste a key" form gives way to a plain
-// confirmation with "change" (reopen the form, old key still valid until
-// a new one is saved) and "forget" (clear it outright). The form is shown
-// whenever there's no key yet, or the user asked to change it.
+// "Change" reopens the form with the old key still valid until a new one is
+// saved; "forget" clears it outright.
 function updateKeyUI() {
   const hasKey = !!state.apiKey;
   const showForm = !hasKey || state.editingKey;
@@ -222,9 +217,6 @@ function shelfTitlesFrom(books) {
   return { read: onShelf('read'), toRead: onShelf('to-read') };
 }
 
-// Reads from state.shelfTitles rather than state.books, so this works
-// identically whether the CSV was just uploaded or the snapshot was
-// restored from a previous session.
 function handleClearData() {
   if (!window.confirm(t('privacy.clearConfirm'))) return;
   storage.clearAll();
@@ -357,9 +349,6 @@ function removeCardFromResults(title, author) {
   renderCurrentResults();
 }
 
-// Restores the library snapshot so regenerating works after a reload
-// without re-attaching the CSV. The batch is restored separately, and
-// either can be present without the other.
 function loadLibrarySnapshot() {
   const snapshot = storage.getLibrary();
   if (!snapshot?.profile) return;

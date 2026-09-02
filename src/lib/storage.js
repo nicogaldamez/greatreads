@@ -121,11 +121,7 @@ export function setCatalogCache(cache) {
   return set(KEYS.catalogCache, cache);
 }
 
-/**
- * Wipes every trace of the user from this browser. Backs the "erase
- * everything" button, which is the counterpart to storing a library
- * snapshot: whatever we keep, the user can remove in one click.
- */
+/** Wipes every Bookito key from this browser. */
 export function clearAll() {
   for (const key of Object.values(KEYS)) {
     remove(key);

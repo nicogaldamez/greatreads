@@ -80,7 +80,6 @@ export async function validateApiKey(apiKey) {
       const body = await res.json();
       message = body?.error?.message;
     } catch {
-      // No JSON body to read, so classify on status alone.
     }
 
     return { ok: false, reason: classifyFailure(res.status, message) };

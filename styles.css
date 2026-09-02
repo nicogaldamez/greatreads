@@ -248,8 +248,6 @@ button {
   flex-wrap: wrap;
 }
 
-/* Destructive and irreversible, so it reads as a warning rather than
-   sitting at the same weight as the source link next to it. */
 .danger-btn {
   color: var(--color-error);
   font-weight: 700;
@@ -337,8 +335,6 @@ button {
   }
 }
 
-/* Regenerating keeps the old batch on screen, dimmed and inert, so the
-   page never goes blank while the next one is on its way. */
 .results-screen.is-busy {
   opacity: 0.4;
   pointer-events: none;
