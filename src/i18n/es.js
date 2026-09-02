@@ -8,6 +8,8 @@ export default {
   'upload.importLinkFull': 'Abrir la página de importación/exportación de Goodreads',
   'upload.button': 'Elegir archivo CSV',
   'upload.fileSelected': 'Seleccionado: {filename}',
+  'upload.notSaved':
+    'Seleccionado: {filename}. Este navegador no pudo guardar la biblioteca, así que vas a tener que volver a subirla después de recargar.',
   'upload.parseError':
     'No pudimos leer ese archivo. Verificá que sea tu biblioteca de Goodreads exportada en CSV.',
 

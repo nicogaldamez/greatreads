@@ -8,6 +8,8 @@ export default {
   'upload.importLinkFull': "Open Goodreads' import/export page",
   'upload.button': 'Choose CSV file',
   'upload.fileSelected': 'Selected: {filename}',
+  'upload.notSaved':
+    "Selected: {filename}. This browser wouldn't store the library, so you'll need to upload it again after a reload.",
   'upload.parseError': "Couldn't read that file. Make sure it's a Goodreads library export CSV.",
 
   'key.title': '2. Paste your Gemini API key',

@@ -110,6 +110,14 @@ export function setLibrary(snapshot) {
 }
 
 /**
+ * The catalog cache is pure lookup savings, so it is capped rather than
+ * allowed to grow until it exhausts the localStorage quota -- once the quota
+ * is hit every other write here starts failing silently too. String keys keep
+ * insertion order, so trimming from the front drops the oldest entries.
+ */
+const CATALOG_CACHE_LIMIT = 500;
+
+/**
  * @returns {Record<string, object>}
  */
 export function getCatalogCache() {
@@ -118,7 +126,12 @@ export function getCatalogCache() {
 
 /** @param {Record<string, object>} cache */
 export function setCatalogCache(cache) {
-  return set(KEYS.catalogCache, cache);
+  const entries = Object.entries(cache);
+  const capped =
+    entries.length > CATALOG_CACHE_LIMIT
+      ? Object.fromEntries(entries.slice(entries.length - CATALOG_CACHE_LIMIT))
+      : cache;
+  return set(KEYS.catalogCache, capped);
 }
 
 /** Wipes every GreatReads key from this browser. */

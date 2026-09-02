@@ -140,13 +140,17 @@ async function handleCsvSelected(file) {
     state.profile = buildProfile(books);
     state.shelfTitles = shelfTitlesFrom(books);
     state.librarySavedAt = new Date().toISOString();
-    storage.setLibrary({
+    // A private window or a full quota makes this a silent no-op, which reads
+    // as the library having been saved when it wasn't. Say so instead.
+    const saved = storage.setLibrary({
       profile: state.profile,
       shelfTitles: state.shelfTitles,
       savedAt: state.librarySavedAt,
     });
 
-    el.uploadStatus.textContent = t('upload.fileSelected', { filename: file.name });
+    el.uploadStatus.textContent = t(saved ? 'upload.fileSelected' : 'upload.notSaved', {
+      filename: file.name,
+    });
     el.uploadStatus.hidden = false;
   } catch {
     state.books = [];
@@ -317,21 +321,30 @@ function handleFilterClick(btn) {
   renderCurrentResults();
 }
 
+// Marking the same book twice used to append a duplicate every time, and the
+// list is both persisted and sent to Gemini on every generate, so it grew
+// without bound in two places at once.
+function addExclusion(listName, entry) {
+  const exclusions = storage.getExclusions();
+  const list = exclusions[listName];
+  if (!list.includes(entry)) {
+    list.push(entry);
+    storage.setExclusions(exclusions);
+  }
+}
+
 function handleCardAction(evt) {
   const card = evt.target.closest('.book-card');
   if (!card) return;
   const title = card.dataset.title;
   const author = card.dataset.author;
+  const entry = `${title} — ${author}`;
 
   if (evt.target.classList.contains('mark-read-btn')) {
-    const exclusions = storage.getExclusions();
-    exclusions.read.push(`${title} — ${author}`);
-    storage.setExclusions(exclusions);
+    addExclusion('read', entry);
     removeCardFromResults(title, author);
   } else if (evt.target.classList.contains('mark-not-interested-btn')) {
-    const exclusions = storage.getExclusions();
-    exclusions.notInterested.push(`${title} — ${author}`);
-    storage.setExclusions(exclusions);
+    addExclusion('notInterested', entry);
     removeCardFromResults(title, author);
   }
 }
