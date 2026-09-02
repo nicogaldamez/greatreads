@@ -81,6 +81,6 @@ export default {
   'faq.a.reset':
     'Use "Erase all my data" at the bottom of the page: it removes all five at once. "Forget my key" is narrower and removes only the key.',
 
-  'footer.sourceLink': 'View source on GitHub',
-  'footer.xLink': '@nicogaldamez on X',
+  'footer.sourceLink': 'View source',
+  'footer.xLink': '@nicogaldamez',
 };
