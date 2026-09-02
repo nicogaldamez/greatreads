@@ -18,6 +18,10 @@ const state = {
   generating: false,
   shelfTitles: /** @type {{read: string[], toRead: string[]}} */ ({ read: [], toRead: [] }),
   librarySavedAt: /** @type {string|null} */ (null),
+  // Titles already shown in this session, so "Regenerate" asks Gemini for a
+  // fresh batch instead of risking the same books again. Session-only: it
+  // resets on reload, same as the profile a regenerate needs to run.
+  recommendedTitles: /** @type {Set<string>} */ (new Set()),
 };
 
 const el = {
@@ -227,6 +231,7 @@ function handleClearData() {
   state.results = [];
   state.discardedCount = 0;
   state.resultsLocale = null;
+  state.recommendedTitles = new Set();
   el.uploadStatus.hidden = true;
   el.csvInput.value = '';
   updateKeyUI();
@@ -236,7 +241,12 @@ function handleClearData() {
 
 function buildExclusionTitles() {
   const { notInterested } = storage.getExclusions();
-  return [...state.shelfTitles.read, ...state.shelfTitles.toRead, ...notInterested];
+  return [
+    ...state.shelfTitles.read,
+    ...state.shelfTitles.toRead,
+    ...notInterested,
+    ...state.recommendedTitles,
+  ];
 }
 
 function parseTitleAuthor(entry) {
@@ -247,7 +257,12 @@ function parseTitleAuthor(entry) {
 function readBooksForDedupe() {
   const fromLibrary = state.shelfTitles.read.map(parseTitleAuthor);
   const { read, notInterested } = storage.getExclusions();
-  return [...fromLibrary, ...read.map(parseTitleAuthor), ...notInterested.map(parseTitleAuthor)];
+  return [
+    ...fromLibrary,
+    ...read.map(parseTitleAuthor),
+    ...notInterested.map(parseTitleAuthor),
+    ...[...state.recommendedTitles].map(parseTitleAuthor),
+  ];
 }
 
 async function handleGenerate() {
@@ -272,6 +287,9 @@ async function handleGenerate() {
     state.results = validated;
     state.discardedCount = discardedCount;
     state.resultsLocale = locale;
+    for (const item of validated) {
+      state.recommendedTitles.add(`${item.recommendation.title} — ${item.recommendation.author}`);
+    }
 
     storage.setLastBatch({
       recommendations: validated,
@@ -369,6 +387,9 @@ function loadCachedBatch() {
   if (!cached) return;
   state.results = cached.recommendations;
   state.resultsLocale = cached.locale;
+  for (const item of cached.recommendations) {
+    state.recommendedTitles.add(`${item.recommendation.title} — ${item.recommendation.author}`);
+  }
   renderCurrentResults();
   maybeEnableGenerate();
   showScreen('results');

@@ -121,3 +121,22 @@ test('validateRecommendations dedupes against a read book whose CSV title carrie
   const { validated } = await validateRecommendations(recs, readBooks);
   assert.equal(validated.length, 0);
 });
+
+test('validateRecommendations dedupes within the same batch when the model returns the same book twice', async () => {
+  globalThis.fetch = async () =>
+    new Response(
+      JSON.stringify({
+        docs: [{ title: 'Dune', author_name: ['Frank Herbert'], key: '/works/OL123W' }],
+      }),
+      { status: 200 }
+    );
+
+  const recs = [
+    { title: 'Dune', author: 'Frank Herbert', year: 1965, reason: 'x', kind: 'safe', confidence: 0.9 },
+    { title: 'Dune', author: 'Frank Herbert', year: 1965, reason: 'y', kind: 'stretch', confidence: 0.7 },
+  ];
+
+  const { validated } = await validateRecommendations(recs, []);
+  assert.equal(validated.length, 1);
+  assert.equal(validated[0].recommendation.reason, 'x');
+});

@@ -187,7 +187,9 @@ async function runPooled(tasks, concurrency, delayMs, onProgress) {
 /**
  * Validates a batch of recommendations against Open Library / Google
  * Books, discarding any that don't match a real catalog entry, and
- * de-duplicating against the reader's already-read books.
+ * de-duplicating against the reader's already-read books as well as
+ * against other recommendations in the same batch (the model can return
+ * the same title/author more than once).
  * @param {Recommendation[]} recommendations
  * @param {{title: string, author: string}[]} readBooks
  * @param {(done: number, total: number) => void} [onProgress] called as each
@@ -206,6 +208,7 @@ export async function validateRecommendations(recommendations, readBooks = [], o
   );
 
   const validated = [];
+  const seenKeys = new Set();
   let discardedCount = 0;
 
   for (const result of results) {
@@ -214,9 +217,10 @@ export async function validateRecommendations(recommendations, readBooks = [], o
       continue;
     }
     const key = cacheKey(result.recommendation.title, result.recommendation.author);
-    if (readKeys.has(key)) {
+    if (readKeys.has(key) || seenKeys.has(key)) {
       continue;
     }
+    seenKeys.add(key);
     validated.push(result);
   }
 
