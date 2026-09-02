@@ -1,128 +1,131 @@
 # GreatReads
 
-*[Leer en español](README.es.md)*
+Recomendaciones de libros a partir de tu historial de lectura en
+Goodreads, sin cuenta, sin servidor y sin base de datos. Subís tu
+biblioteca, pegás tu propia API key gratuita de Gemini, y recibís
+recomendaciones validadas contra un catálogo real.
 
-Book recommendations from your Goodreads reading history. No account, no
-server, no database. Upload your export, paste your own free Gemini API
-key, and get recommendations validated against a real book catalog.
+## Por qué
 
-## Why
+El motor de recomendaciones propio de Goodreads es limitado, y su API está
+muerta desde diciembre de 2020, y por eso esta app trabaja enteramente a
+partir de la exportación en CSV.
 
-Goodreads' own recommendation engine is thin, and its API has been dead
-since December 2020, so this app works entirely from the CSV export instead.
+## Sin build, sin dependencias
 
-## No build, no dependencies
+Clonalo y abrilo. No hay `npm install`, no hay bundler, no hay
+`node_modules`. Es JS puro con módulos ES nativos, CSS puro, y un
+`package.json` que existe únicamente para que `node --test` trate los
+archivos como módulos. Si querés contribuir, no necesitás aprender ningún
+toolchain primero.
 
-Clone it and open it. There's no `npm install`, no bundler, no
-`node_modules`. It's plain JS with native ES modules, plain CSS, and a
-`package.json` that exists only so `node --test` treats the files as
-modules. If you want to contribute, you don't need to learn a toolchain
-first.
+## Correrlo localmente
 
-## Running it locally
-
-Browsers block ES modules loaded from `file://`, so you need a local HTTP
-server. Any will do:
+Los browsers bloquean módulos ES cargados desde `file://`, así que hace
+falta un servidor HTTP local. Cualquiera sirve:
 
 ```
 python3 -m http.server 8000
 ```
 
-Then open `http://localhost:8000`.
+Después abrí `http://localhost:8000`.
 
-## Getting your Goodreads export
+## Cómo bajar tu biblioteca de Goodreads
 
-Goodreads → **My Books** → **Import/Export** → **Export Library**. It
-generates a `goodreads_library_export.csv` file. Upload that.
+Goodreads → **My Books** → **Import/Export** → **Export Library**. Genera
+un archivo `goodreads_library_export.csv`. Subí ese archivo.
 
-## Getting a free Gemini API key
+## Cómo conseguir una API key gratis de Gemini
 
-GreatReads is BYOK (bring your own key): there's no shared demo key and no
-backend to hold one for you. Getting one takes about a minute:
+GreatReads es BYOK (traé tu propia key): no hay una key compartida de demo
+ni un backend que la guarde por vos. Conseguir una lleva un minuto:
 
-1. Open [Google AI Studio](https://aistudio.google.com/app/apikey) and sign
-   in with any Google account.
-2. Go to the API keys section and click **Create API key**.
-3. Pick an existing Google Cloud project, or let AI Studio create one for
-   you. Either works.
-4. Copy the key it shows you and paste it into GreatReads's step 2.
+1. Entrá a [Google AI Studio](https://aistudio.google.com/app/apikey) e
+   iniciá sesión con cualquier cuenta de Google.
+2. Andá a la sección de API keys y hacé clic en **Create API key**.
+3. Elegí un proyecto de Google Cloud que ya tengas, o dejá que AI Studio te
+   cree uno. Cualquiera de las dos sirve.
+4. Copiá la key que te muestra y pegala en el paso 2 de GreatReads.
 
-The free tier needs no credit card. It has per-minute and per-day rate
-limits, which is plenty for a handful of recommendation runs.
+El nivel gratuito no pide tarjeta de crédito. Tiene límites por minuto y
+por día, de sobra para unas cuantas tandas de recomendaciones.
 
-Treat the key like a password: don't share it or commit it anywhere. You
-can delete it from AI Studio at any time, and GreatReads's "forget my key"
-button clears it from this browser.
+Tratá la key como una contraseña: no la compartas ni la subas a ningún
+repo. Podés borrarla desde AI Studio cuando quieras, y el botón "olvidar mi
+key" de GreatReads la elimina de este navegador.
 
-## FAQ
+## Preguntas frecuentes
 
-**Does my library get uploaded anywhere?**
-No. The CSV is parsed in your browser and never leaves it. The only network
-calls GreatReads makes are to Google's Gemini API (your taste profile, not the
-raw file), and to Open Library and Google Books to validate the results.
+**¿Se sube mi biblioteca a algún lado?**
+No. El CSV se parsea en tu navegador y nunca sale de ahí. Los únicos
+llamados de red que hace GreatReads son a la API de Gemini de Google (tu
+perfil de gustos, no el archivo crudo), y a Open Library y Google Books
+para validar los resultados.
 
-**What does GreatReads store on my machine?**
-Five `localStorage` entries: your API key (`greatreads.apiKey`), your last
-batch of recommendations (`greatreads.lastBatch`), a compressed summary of
-your library (`greatreads.library`), the books you marked as read or not
-interested (`greatreads.exclusions`), and a cache of catalog lookups
-(`greatreads.catalogCache`). Nothing else, and nothing on any server.
+**¿Qué guarda GreatReads en mi máquina?**
+Cinco entradas de `localStorage`: tu API key (`greatreads.apiKey`), tu última
+tanda de recomendaciones (`greatreads.lastBatch`), un resumen comprimido de tu
+biblioteca (`greatreads.library`), los libros que marcaste como leídos o sin
+interés (`greatreads.exclusions`), y un cache de las búsquedas en catálogos
+(`greatreads.catalogCache`). Nada más, y nada en ningún servidor.
 
-The library summary is the smallest slice of the export that regenerating
-needs: the taste profile plus the titles on your read and to-read shelves.
-Per-book ratings, dates read, shelves and ISBNs are not kept. It is what
-lets "Regenerate" work after a reload without re-attaching the CSV, and it
-is why the results screen tells you which upload it is working from.
+El resumen de la biblioteca es la porción mínima de la exportación que hace
+falta para regenerar: el perfil de gustos más los títulos de tus estantes
+"read" y "to-read". No se guardan las puntuaciones libro por libro, ni las
+fechas de lectura, ni los estantes, ni los ISBN. Es lo que permite que
+"Regenerar" funcione después de recargar sin volver a adjuntar el CSV, y
+por eso la pantalla de resultados te dice de qué carga está trabajando.
 
-**Why did some recommendations disappear?**
-Every recommendation is checked against Open Library, and against Google
-Books if Open Library has no match. If neither has a book whose title and
-author surname match, it is dropped and the count shows up above the
-results. This is what keeps invented books out of your list.
+**¿Por qué desaparecieron algunas recomendaciones?**
+Cada recomendación se valida contra Open Library, y contra Google Books si
+Open Library no la encuentra. Si en ninguno aparece un libro cuyo título y
+apellido de autor coincidan, se descarta y el total aparece arriba de los
+resultados. Eso es lo que mantiene los libros inventados fuera de tu lista.
 
-**What's the difference between a safe bet and a stretch pick?**
-Safe bets sit squarely inside the taste your library already shows.
-Stretch picks deliberately step outside it (adjacent genres, unfamiliar
-authors, different eras) while still connecting to something you've
-enjoyed.
+**¿Qué diferencia hay entre una apuesta segura y una elección lateral?**
+Las apuestas seguras caen de lleno dentro del gusto que ya muestra tu
+biblioteca. Las elecciones laterales se corren de eso a propósito
+(géneros vecinos, autores desconocidos, otras épocas), pero siempre
+conectando con algo que disfrutaste.
 
-**Does it remember the books I marked?**
-Yes. "I've read this" and "Not interested" are saved locally and passed to
-Gemini as exclusions on the next run, so those books won't come back.
+**¿Recuerda los libros que marqué?**
+Sí. "Ya lo leí" y "No me interesa" se guardan localmente y se le pasan a
+Gemini como exclusiones en la tanda siguiente, así esos libros no vuelven
+a aparecer.
 
-**Why are the recommendations different each time I regenerate?**
-The model runs at its default sampling settings, so the same profile
-produces a different batch each time. Regenerating is a cheap way to get a
-second opinion.
+**¿Por qué cambian las recomendaciones cada vez que regenero?**
+El modelo corre con su configuración de sampling por defecto, así que el
+mismo perfil produce una tanda distinta cada vez. Regenerar es una forma
+barata de pedir una segunda opinión.
 
-**What does this cost?**
-Nothing. Gemini's free tier covers it and needs no credit card. If you hit
-the per-minute rate limit, wait a moment and try again.
+**¿Cuánto cuesta?**
+Nada. El nivel gratuito de Gemini alcanza y no pide tarjeta de crédito. Si
+llegás al límite por minuto, esperá un momento y probá de nuevo.
 
-**How do I erase everything?**
-Use "Erase all my data" at the bottom of the page: it removes all five
-entries at once, after a confirmation. "Forget my key" is narrower and
-removes only the key.
+**¿Cómo borro todo?**
+Usá "Borrar todos mis datos" al pie de la página: elimina las cinco
+entradas de una, con una confirmación previa. "Olvidar mi key" es más
+acotado y borra solo la key.
 
-**Do I need a Goodreads account?**
-You need a Goodreads library export (My Books → Import/Export → Export
-Library). GreatReads never talks to Goodreads itself; its API has been shut
-down since December 2020.
+**¿Necesito una cuenta de Goodreads?**
+Necesitás tu biblioteca de Goodreads exportada (My Books → Import/Export →
+Export Library). GreatReads nunca habla con Goodreads directamente; su API
+está dada de baja desde diciembre de 2020.
 
-## Privacy
+## Privacidad
 
-Everything happens in your browser. The CSV is parsed locally and never
-uploaded anywhere. Your API key is stored in `localStorage` on your machine
-and used only for direct calls to Google's Gemini API. There is no
-GreatReads server in between. If you're on a shared machine, use the "forget
-my key" button when you're done.
+Todo pasa en tu navegador. El CSV se parsea localmente y nunca se sube a
+ningún lado. Tu API key se guarda en el `localStorage` de tu máquina y se
+usa solo para llamados directos a la API de Gemini de Google. No hay
+ningún servidor de GreatReads en el medio. Si estás en una máquina
+compartida, usá el botón "olvidar mi key" cuando termines.
 
-## Running the tests
+## Correr los tests
 
 ```
 node --test test/
 ```
 
-## License
+## Licencia
 
-MIT. See [LICENSE](LICENSE).
+MIT. Ver [LICENSE](LICENSE).
