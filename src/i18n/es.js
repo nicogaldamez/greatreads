@@ -1,5 +1,5 @@
 export default {
-  'app.title': 'Great Reads',
+  'app.wordmark': 'Great Reads',
   'app.tagline': 'Tu gusto lector, convertido en la próxima recomendación.',
 
   'upload.title': '1. Subí tu biblioteca de Goodreads',
@@ -13,7 +13,7 @@ export default {
 
   'key.title': '2. Pegá tu API key de Gemini',
   'key.instructions':
-    'La usamos para generar tus recomendaciones con Gemini, el modelo de IA de Google. Se guarda solo en este navegador, en tu propia computadora. Great Reads no tiene servidor, así que nada de lo que pegues acá sale de tu máquina, salvo los llamados directos a Google.',
+    'La usamos para generar tus recomendaciones con Gemini, el modelo de IA de Google. Se guarda solo en este navegador, en tu propia computadora. GreatReads no tiene servidor, así que nada de lo que pegues acá sale de tu máquina, salvo los llamados directos a Google.',
   'key.getKeyLink': 'Conseguí una API key gratis en Google AI Studio',
   'key.help.summary': '¿Cómo consigo una?',
   'key.help.step1':
@@ -74,18 +74,18 @@ export default {
     'Esto borra de este navegador tu API key, tus recomendaciones guardadas, el resumen de tu biblioteca y tus marcas de leído y sin interés. ¿Seguimos?',
 
   'faq.title': 'Preguntas frecuentes',
-  'faq.q.stored': '¿Qué guarda Great Reads en mi máquina?',
+  'faq.q.stored': '¿Qué guarda GreatReads en mi máquina?',
   'faq.a.stored':
-    'Cinco cosas, guardadas directo en tu navegador, en tu propia computadora: tu API key, tu última tanda de recomendaciones, un resumen comprimido de tu biblioteca, los libros que marcaste como leídos o sin interés, y un cache de las búsquedas en catálogos. Nada más, y nada en ningún servidor.',
+    'Cinco cosas, todas guardadas en tu propio navegador: tu API key, tu última tanda de recomendaciones, un resumen de tu biblioteca, los libros que marcaste como leídos o sin interés, y una copia de las búsquedas que ya hicimos en los catálogos (para no repetirlas la próxima vez). Nada más, y nada en ningún servidor.',
   'faq.q.discarded': '¿Por qué desaparecieron algunas recomendaciones?',
   'faq.a.discarded':
-    'Cada recomendación se valida contra Open Library y después contra Google Books. Si en ninguno aparece un libro cuyo título y apellido de autor coincidan, se descarta. Eso es lo que mantiene los libros inventados fuera de tus resultados.',
+    'Antes de mostrarte un libro, comprobamos que exista de verdad buscándolo en dos catálogos reales: Open Library y Google Books. Si no lo encontramos en ninguno de los dos, lo sacamos de la lista. Así evitamos mostrarte libros que la IA se inventó.',
   'faq.q.cost': '¿Cuánto cuesta?',
   'faq.a.cost':
-    'Nada. El nivel gratuito de Gemini alcanza y no pide tarjeta de crédito. Si llegás al límite por minuto, esperá un momento y regenerá.',
+    'Nada. El nivel gratuito de Gemini alcanza y no pide tarjeta. Si llegás a su límite de uso por minuto, esperá un momento y volvé a intentar.',
   'faq.q.reset': '¿Cómo borro todo?',
   'faq.a.reset':
-    'Usá "Borrar todos mis datos" al pie de la página: elimina las cinco de una. "Olvidar mi key" es más acotado y borra solo la key.',
+    'Tocá "Borrar todos mis datos", al pie de la página: borra todo lo que guardamos, de una sola vez. "Olvidar mi key" hace menos: borra solo la key.',
 
   'footer.sourceLink': 'Ver código fuente',
   'footer.xLink': '@nicogaldamez',

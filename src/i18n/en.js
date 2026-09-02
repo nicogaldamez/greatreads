@@ -1,5 +1,5 @@
 export default {
-  'app.title': 'Great Reads',
+  'app.wordmark': 'Great Reads',
   'app.tagline': 'Your taste in books, turned into your next recommendation.',
 
   'upload.title': '1. Upload your Goodreads export',
@@ -12,7 +12,7 @@ export default {
 
   'key.title': '2. Paste your Gemini API key',
   'key.instructions':
-    "We use it to generate your recommendations with Gemini, Google's AI model. It's stored only in this browser, on your own computer. Great Reads has no server, so nothing you paste here ever leaves your machine except direct calls to Google.",
+    "We use it to generate your recommendations with Gemini, Google's AI model. It's stored only in this browser, on your own computer. GreatReads has no server, so nothing you paste here ever leaves your machine except direct calls to Google.",
   'key.getKeyLink': 'Get a free API key from Google AI Studio',
   'key.help.summary': 'How do I get one?',
   'key.help.step1': 'Open Google AI Studio (link above) and sign in with any Google account.',
@@ -68,18 +68,18 @@ export default {
     'This erases your API key, your saved recommendations, your library summary and your read/not-interested marks from this browser. Continue?',
 
   'faq.title': 'Frequently asked questions',
-  'faq.q.stored': 'What does Great Reads store on my machine?',
+  'faq.q.stored': 'What does GreatReads store on my machine?',
   'faq.a.stored':
-    'Five things, saved right in your browser on your own computer: your API key, your last batch of recommendations, a compressed summary of your library, the books you marked as read or not interested, and a cache of catalog lookups. Nothing else, and nothing on any server.',
+    "Five things, all saved in your own browser: your API key, your last batch of recommendations, a summary of your library, the books you marked as read or not interested, and a copy of the catalog searches we've already done (so we don't repeat them next time). Nothing else, and nothing on any server.",
   'faq.q.discarded': 'Why did some recommendations disappear?',
   'faq.a.discarded':
-    'Every recommendation is checked against Open Library, then Google Books. If neither has a book whose title and author surname match, it is dropped. That is what keeps invented books out of your results.',
+    "Before showing you a book, we check that it actually exists by searching two real catalogs: Open Library and Google Books. If we can't find it in either one, we drop it from the list. That's how we keep the AI's made-up books out of your results.",
   'faq.q.cost': 'What does this cost?',
   'faq.a.cost':
-    "Nothing. Gemini's free tier covers it and needs no credit card. If you hit the per-minute limit, wait a moment and regenerate.",
+    "Nothing. Gemini's free tier covers it and needs no credit card. If you hit its per-minute usage limit, wait a moment and try again.",
   'faq.q.reset': 'How do I erase everything?',
   'faq.a.reset':
-    'Use "Erase all my data" at the bottom of the page: it removes all five at once. "Forget my key" is narrower and removes only the key.',
+    'Tap "Erase all my data" at the bottom of the page: it erases everything we saved, all at once. "Forget my key" does less: it only erases the key.',
 
   'footer.sourceLink': 'View source',
   'footer.xLink': '@nicogaldamez',
