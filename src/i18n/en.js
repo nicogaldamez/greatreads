@@ -6,6 +6,8 @@ export default {
 
   'upload.title': '1. Upload your Goodreads export',
   'upload.instructions': 'Goodreads → My Books → Import/Export → Export Library',
+  'upload.importLink': 'Open',
+  'upload.importLinkFull': "Open Goodreads' import/export page",
   'upload.button': 'Choose CSV file',
   'upload.fileSelected': 'Selected: {filename}',
   'upload.parseError': "Couldn't read that file. Make sure it's a Goodreads library export CSV.",

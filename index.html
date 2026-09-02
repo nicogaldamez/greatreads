@@ -25,7 +25,12 @@
     <section id="setup-screen" class="setup-screen">
       <div class="step-card">
         <h2 data-i18n="upload.title"></h2>
-        <p class="hint" data-i18n="upload.instructions"></p>
+        <div class="upload-instructions-row">
+          <p class="hint" data-i18n="upload.instructions"></p>
+          <a id="goodreads-import-link" class="mini-btn" href="https://www.goodreads.com/review/import"
+             target="_blank" rel="noopener" data-i18n="upload.importLink"
+             data-i18n-attr="aria-label:upload.importLinkFull"></a>
+        </div>
         <label class="file-picker">
           <input type="file" id="csv-input" accept=".csv" hidden />
           <span data-i18n="upload.button"></span>
