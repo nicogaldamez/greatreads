@@ -15,7 +15,7 @@ export default {
 
   'key.title': '2. Pegá tu API key de Gemini',
   'key.instructions':
-    'La usamos para generar tus recomendaciones con Gemini, el modelo de IA de Google. Se guarda solo en este navegador, en tu propia computadora. GreatReads no tiene servidor, así que nada de lo que pegues acá sale de tu máquina, salvo los llamados directos a Google.',
+    'Una API key es como una contraseña que le permite a GreatReads pedirle recomendaciones a Gemini, el modelo de IA de Google, en tu nombre. Se guarda solo en este navegador, en tu propia computadora. GreatReads no tiene servidor, así que nada de lo que pegues acá sale de tu máquina, salvo los llamados directos a Google.',
   'key.getKeyLink': 'Conseguí una API key gratis en Google AI Studio',
   'key.help.summary': '¿Cómo consigo una?',
   'key.help.step1':
